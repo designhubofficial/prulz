@@ -1,0 +1,30 @@
+{
+  "name": "dispatch-studio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Email template studio for virtual healthcare assistants",
+  "scripts": {
+    "extract": "node scripts/extract-engine.mjs && node scripts/extract-signature.mjs",
+    "vendor:ort": "node scripts/vendor-ort.mjs",
+    "postinstall": "node scripts/vendor-ort.mjs",
+    "dev": "vite",
+    "build": "npm run vendor:ort && tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "snapshots": "node scripts/make-snapshots.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "3.8.1",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.3.289"
+  }
+}

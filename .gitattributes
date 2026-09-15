@@ -1,0 +1,3 @@
+# Keep LF everywhere: the golden snapshot tests compare renders byte-for-byte.
+* text=auto eol=lf
+*.png binary

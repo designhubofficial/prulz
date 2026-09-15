@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispatch — Email Template Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=Raleway:wght@400;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F6F8; --panel:#FFFFFF; --rail:#101720;
+    --line:#E4E8EC; --line-soft:#EFF2F5;
+    --ink:#101720; --ink-2:#5C6B7A; --ink-3:#8D9AA6;
+    --brand:#2A6BF2; --brand-soft:#EEF3FE;
+    --ok:#12805C; --ok-soft:#E7F6F0;
+    --warn:#9A6400; --warn-soft:#FDF3E2;
+    --bad:#B42318; --bad-soft:#FEF0EF;
+    --r-sm:8px; --r:11px; --r-lg:16px;
+    --sh-1:0 1px 2px rgba(16,23,32,.06);
+    --sh-2:0 4px 16px rgba(16,23,32,.08);
+    --sh-3:0 18px 48px rgba(16,23,32,.14);
+  }
+  [data-ui="dark"]{
+    --bg:#0C1117; --panel:#131A22; --rail:#0A0F14;
+    --line:#222C36; --line-soft:#1B242D;
+    --ink:#E9EEF3; --ink-2:#93A1AE; --ink-3:#6C7986;
+    --brand:#5A8DFF; --brand-soft:#17233A;
+    --ok-soft:#10261F; --warn-soft:#2A2113; --bad-soft:#2B1615;
+    --sh-1:none; --sh-2:0 4px 16px rgba(0,0,0,.4); --sh-3:0 18px 48px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:13.5px; line-height:1.5; -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  button,input,select,textarea{font:inherit; color:inherit;}
+  ::-webkit-scrollbar{width:10px; height:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:20px; border:3px solid transparent; background-clip:content-box;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--ink-3); background-clip:content-box;}
+
+  /* ============ top bar ============ */
+  .top{
+    height:52px; display:flex; align-items:center; gap:14px; padding:0 14px 0 16px;
+    background:var(--panel); border-bottom:1px solid var(--line); position:relative; z-index:40;
+  }
+  .logo{display:flex; align-items:center; gap:9px; font-weight:600; letter-spacing:-.015em; font-size:14.5px;}
+  .logo .mark{
+    width:22px; height:22px; border-radius:6px; background:var(--ink);
+    display:grid; place-items:center; color:var(--panel); font-size:12px; font-weight:700;
+  }
+  .logo .tag{
+    font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--brand); background:var(--brand-soft); padding:3px 6px; border-radius:5px;
+  }
+  .docname{
+    border:1px solid transparent; background:transparent; border-radius:var(--r-sm);
+    padding:5px 9px; font-weight:500; width:230px; color:var(--ink);
+  }
+  .docname:hover{background:var(--line-soft);}
+  .docname:focus{outline:none; background:var(--panel); border-color:var(--line); box-shadow:0 0 0 3px var(--brand-soft);}
+  .grow{flex:1;}
+
+  /* ============ buttons ============ */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    padding:7px 12px; border-radius:var(--r-sm); border:1px solid var(--line);
+    background:var(--panel); cursor:pointer; font-size:13px; font-weight:500;
+    white-space:nowrap; transition:background .12s, border-color .12s, transform .05s, opacity .12s;
+  }
+  .btn:hover{background:var(--line-soft); border-color:var(--ink-3);}
+  .btn:active{transform:translateY(1px);}
+  .btn.primary{background:var(--brand); border-color:var(--brand); color:#fff;}
+  .btn.primary:hover{filter:brightness(1.07); background:var(--brand);}
+  .btn.ghost{border-color:transparent; background:transparent;}
+  .btn.ghost:hover{background:var(--line-soft);}
+  .btn.sm{padding:5px 9px; font-size:12.5px;}
+  .btn.icon{padding:6px; width:32px;}
+  .btn svg{width:15px; height:15px; flex:none;}
+
+  .menu-wrap{position:relative;}
+  .menu{
+    position:absolute; right:0; top:calc(100% + 6px); min-width:238px; z-index:50;
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--r);
+    box-shadow:var(--sh-3); padding:6px; display:none;
+  }
+  .menu.open{display:block;}
+  .menu button{
+    display:flex; align-items:flex-start; gap:10px; width:100%; text-align:left;
+    padding:8px 9px; border:0; background:none; border-radius:var(--r-sm); cursor:pointer;
+  }
+  .menu button:hover{background:var(--line-soft);}
+  .menu button b{display:block; font-weight:500; font-size:13px;}
+  .menu button i{display:block; font-style:normal; font-size:11.5px; color:var(--ink-3); line-height:1.4;}
+  .menu hr{border:0; border-top:1px solid var(--line-soft); margin:6px 4px;}
+
+  /* ============ shell ============ */
+  .shell{display:grid; grid-template-columns:54px 372px 1fr; height:calc(100vh - 52px);}
+
+  .rail{
+    background:var(--rail); display:flex; flex-direction:column; align-items:center;
+    padding:10px 0; gap:4px;
+  }
+  .rail button{
+    width:38px; height:38px; border-radius:10px; border:0; background:transparent;
+    color:#93A1AE; display:grid; place-items:center; cursor:pointer; position:relative;
+    transition:background .12s, color .12s;
+  }
+  .rail button:hover{background:rgba(255,255,255,.07); color:#DCE3EA;}
+  .rail button[aria-selected="true"]{background:rgba(255,255,255,.13); color:#fff;}
+  .rail button svg{width:18px; height:18px;}
+  .rail .sp{flex:1;}
+  .rail .tip{
+    position:absolute; left:46px; top:50%; transform:translateY(-50%);
+    background:var(--rail); color:#fff; padding:5px 9px; border-radius:7px; font-size:12px;
+    white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .12s; box-shadow:var(--sh-2);
+  }
+  .rail button:hover .tip{opacity:1;}
+
+  .panel{background:var(--panel); border-right:1px solid var(--line); overflow-y:auto;}
+  .pane{display:none; padding:16px 16px 48px;}
+  .pane.active{display:block;}
+  .pane h2{
+    font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3);
+    margin:0 0 12px; font-weight:600;
+  }
+  .pane h3{
+    font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-3);
+    margin:22px 0 10px; font-weight:600;
+  }
+
+  label.f{display:block; margin-bottom:12px;}
+  label.f > span{display:block; font-size:12px; font-weight:500; color:var(--ink-2); margin-bottom:5px;}
+  input[type=text], input[type=url], select, textarea{
+    width:100%; padding:8px 10px; background:var(--panel); color:var(--ink);
+    border:1px solid var(--line); border-radius:var(--r-sm); outline:none;
+    transition:border-color .12s, box-shadow .12s;
+  }
+  input:focus, select:focus, textarea:focus{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft);}
+  textarea{resize:vertical; line-height:1.6;}
+  .r2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+  /* ============ theme cards ============ */
+  .themes{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .theme{
+    border:1px solid var(--line); border-radius:var(--r); padding:0; cursor:pointer;
+    background:var(--panel); overflow:hidden; text-align:left; transition:border-color .12s, box-shadow .12s;
+  }
+  .theme:hover{border-color:var(--ink-3);}
+  .theme[aria-selected="true"]{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft);}
+  .theme .thumb{height:74px; background:#F7F9FB; border-bottom:1px solid var(--line-soft); padding:8px; display:block;}
+  .theme .thumb svg{width:100%; height:100%; display:block;}
+  .theme .meta{padding:8px 10px;}
+  .theme .meta b{display:block; font-size:12.5px; font-weight:600;}
+  .theme .meta i{display:block; font-style:normal; font-size:11px; color:var(--ink-3); line-height:1.35; margin-top:1px;}
+
+  /* ============ palettes ============ */
+  .palettes{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .pal{
+    border:1px solid var(--line); border-radius:var(--r-sm); padding:8px; cursor:pointer;
+    background:var(--panel); text-align:left; transition:border-color .12s, box-shadow .12s;
+  }
+  .pal:hover{border-color:var(--ink-3);}
+  .pal[aria-selected="true"]{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft);}
+  .pal .chips{display:flex; gap:3px; margin-bottom:6px;}
+  .pal .chips i{width:100%; height:16px; border-radius:4px; display:block;}
+  .pal span{font-size:11.5px; font-weight:500;}
+
+  .swatch{display:flex; align-items:center; gap:8px;}
+  .swatch input[type=color]{
+    width:32px; height:32px; padding:0; border:1px solid var(--line);
+    border-radius:var(--r-sm); background:none; cursor:pointer; flex:none;
+  }
+  .swatch input[type=text]{font-family:ui-monospace,Menlo,monospace; font-size:12px;}
+
+  /* ============ editor ============ */
+  .ed-tools{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:9px;}
+  #source{min-height:340px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px;}
+  .chips-row{display:flex; flex-wrap:wrap; gap:5px; margin:9px 0 4px;}
+  .chip{
+    border:1px solid var(--line); background:var(--panel); border-radius:20px;
+    padding:4px 10px; font-size:11.5px; cursor:pointer; color:var(--ink-2);
+    font-family:ui-monospace,Menlo,monospace; transition:background .12s, border-color .12s;
+  }
+  .chip:hover{background:var(--brand-soft); border-color:var(--brand); color:var(--brand);}
+
+  details.guide{border:1px solid var(--line-soft); border-radius:var(--r); overflow:hidden; margin-top:12px;}
+  details.guide summary{
+    cursor:pointer; list-style:none; padding:9px 12px; font-size:12.5px;
+    font-weight:500; color:var(--ink-2); background:var(--line-soft);
+  }
+  details.guide summary::-webkit-details-marker{display:none;}
+  .guide table{width:100%; border-collapse:collapse; font-size:11.5px;}
+  .guide td{padding:6px 12px; border-top:1px solid var(--line-soft); vertical-align:top;}
+  .guide td:first-child{font-family:ui-monospace,Menlo,monospace; white-space:nowrap; width:44%;}
+  .guide td:last-child{color:var(--ink-2);}
+
+  .logo-drop{
+    border:1.5px dashed var(--line); border-radius:var(--r); padding:16px;
+    text-align:center; color:var(--ink-3); font-size:12.5px; cursor:pointer;
+    transition:border-color .12s, background .12s;
+  }
+  .logo-drop:hover{border-color:var(--brand); background:var(--brand-soft);}
+  .logo-drop img{max-height:52px; max-width:100%; margin:0 auto 8px; display:block;}
+
+  /* ============ canvas ============ */
+  .canvas{display:flex; flex-direction:column; overflow:hidden;}
+  .cbar{
+    height:48px; display:flex; align-items:center; gap:10px; padding:0 16px;
+    border-bottom:1px solid var(--line); background:var(--panel);
+  }
+  .seg{display:inline-flex; background:var(--line-soft); border-radius:9px; padding:3px; gap:2px;}
+  .seg button{
+    border:0; background:none; padding:5px 11px; border-radius:7px;
+    font-size:12.5px; font-weight:500; color:var(--ink-2); cursor:pointer;
+  }
+  .seg button[aria-selected="true"]{background:var(--panel); color:var(--ink); box-shadow:var(--sh-1);}
+  .stat{font-size:11.5px; color:var(--ink-3);}
+  .stat b{color:var(--ink-2); font-weight:600;}
+
+  .stage{flex:1; overflow-y:auto; padding:22px; display:flex; flex-direction:column; align-items:center;}
+  .inbox{
+    width:100%; max-width:720px; background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--r); padding:12px 14px; margin-bottom:16px; display:flex; gap:11px;
+  }
+  .inbox .av{
+    width:34px; height:34px; border-radius:50%; flex:none; display:grid; place-items:center;
+    background:var(--brand-soft); color:var(--brand); font-weight:700; font-size:13px;
+  }
+  .inbox .li{min-width:0; flex:1;}
+  .inbox .li .l1{display:flex; align-items:baseline; gap:8px;}
+  .inbox .li b{font-size:13px; font-weight:600;}
+  .inbox .li .t{margin-left:auto; font-size:11px; color:var(--ink-3); flex:none;}
+  .inbox .li .s{font-size:13px; margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .inbox .li .p{font-size:12px; color:var(--ink-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+  .frame{
+    background:#fff; border:1px solid var(--line); border-radius:var(--r-lg);
+    box-shadow:var(--sh-2); overflow:hidden; width:100%; max-width:720px;
+    transition:max-width .25s cubic-bezier(.4,0,.2,1);
+  }
+  .frame.mobile{max-width:392px;}
+  iframe{width:100%; border:0; display:block; height:min(1100px, 74vh); background:#fff;}
+  pre.code{
+    margin:0; width:100%; max-width:960px; background:#0C1218; color:#CBD6E0;
+    padding:18px; border-radius:var(--r-lg); font-family:ui-monospace,Menlo,monospace;
+    font-size:11.5px; line-height:1.65; overflow:auto; height:74vh;
+    white-space:pre-wrap; word-break:break-word;
+  }
+  pre.plain{
+    background:var(--panel); color:var(--ink); border:1px solid var(--line);
+    font-size:12.5px; white-space:pre-wrap; word-break:normal;
+  }
+  .hidden{display:none !important;}
+
+  /* ============ review ============ */
+  .check{
+    display:flex; gap:10px; padding:10px 11px; border-radius:var(--r-sm);
+    margin-bottom:7px; font-size:12.5px; line-height:1.45; align-items:flex-start;
+  }
+  .check .ic{width:16px; height:16px; flex:none; margin-top:1px;}
+  .check.ok{background:var(--ok-soft); color:var(--ok);}
+  .check.warn{background:var(--warn-soft); color:var(--warn);}
+  .check.bad{background:var(--bad-soft); color:var(--bad);}
+  .check b{font-weight:600;}
+  .check span{display:block; opacity:.85; font-weight:400;}
+
+  .linklist{border:1px solid var(--line); border-radius:var(--r-sm); overflow:hidden;}
+  .linklist div{
+    padding:8px 10px; border-top:1px solid var(--line-soft); font-size:11.5px;
+    display:flex; gap:8px; align-items:flex-start;
+  }
+  .linklist div:first-child{border-top:0;}
+  .linklist b{font-weight:500; flex:none; max-width:38%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .linklist code{
+    font-family:ui-monospace,Menlo,monospace; color:var(--ink-3); font-size:11px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0;
+  }
+  .linklist code.flag{color:var(--bad);}
+  .empty{color:var(--ink-3); font-size:12.5px; padding:12px 0;}
+
+  .note{
+    background:var(--line-soft); border-radius:var(--r-sm); padding:11px 12px;
+    font-size:12px; color:var(--ink-2); line-height:1.55; margin-top:14px;
+  }
+  .note b{color:var(--ink);}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(10px);
+    background:var(--ink); color:var(--panel); padding:10px 18px; border-radius:10px;
+    font-size:13px; opacity:0; pointer-events:none; z-index:80; box-shadow:var(--sh-3);
+    transition:opacity .18s, transform .18s;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:1080px){
+    body{overflow:auto;}
+    .shell{grid-template-columns:54px 1fr; height:auto;}
+    .canvas{grid-column:1 / -1; border-top:1px solid var(--line);}
+    iframe, pre.code{height:60vh;}
+  }
+
+  /* ============ studio visual refresh ============ */
+  :root{
+    --bg:#F3F6F4; --panel:#FFFEFA; --rail:#17302B;
+    --line:#DCE7E0; --line-soft:#EFF4F0;
+    --ink:#21332C; --ink-2:#63736B; --ink-3:#87968E;
+    --brand:#236B60; --brand-soft:#E7F2EF;
+    --sh-1:0 1px 2px rgba(31,48,42,.05);
+    --sh-2:0 4px 16px rgba(31,48,42,.08);
+    --sh-3:0 18px 48px rgba(31,48,42,.14);
+  }
+  [data-ui="dark"]{
+    --bg:#0F1715; --panel:#17211E; --rail:#0B1512;
+    --line:#293B35; --line-soft:#20302A;
+    --ink:#E9F1EC; --ink-2:#9CADA4; --ink-3:#74867D;
+    --brand:#67B3A5; --brand-soft:#193832;
+    --sh-1:none; --sh-2:0 4px 16px rgba(0,0,0,.38); --sh-3:0 18px 48px rgba(0,0,0,.55);
+  }
+  body{background:var(--bg); color:var(--ink);}
+  .top{height:58px; padding:0 20px; background:rgba(255,254,250,.94); box-shadow:0 1px 0 rgba(31,48,42,.02);}
+  [data-ui="dark"] .top{background:rgba(23,33,30,.96);}
+  .logo{gap:10px; font-size:15px; letter-spacing:-.02em;}
+  .logo .mark{width:26px; height:26px; border-radius:8px; background:var(--brand); color:#F1FAF6; font-family:Georgia,serif; font-size:14px;}
+  .logo .tag{color:var(--brand); background:var(--brand-soft); border-radius:999px; padding:4px 8px; font-size:9px;}
+  .docname{width:250px; color:var(--ink-2);}
+  .shell{height:calc(100vh - 58px); grid-template-columns:60px 390px 1fr;}
+  .rail{padding:13px 0; background:var(--rail);}
+  .rail button{width:40px; height:40px; border-radius:11px; color:#9EB1A8;}
+  .rail button:hover{background:rgba(255,255,255,.08); color:#F3FBF6;}
+  .rail button[aria-selected="true"]{background:rgba(125,205,184,.16); color:#F3FBF6; box-shadow:inset 3px 0 0 #7BCBB8;}
+  .panel{background:var(--panel); border-right-color:var(--line);}
+  .pane{padding:22px 26px 50px;}
+  .pane h2{color:var(--ink-3); letter-spacing:.12em; font-size:10px; margin-bottom:16px;}
+  .pane h3{color:var(--ink-3); letter-spacing:.1em; font-size:10px;}
+  label.f{margin-bottom:16px;}
+  label.f > span{color:var(--ink-2); font-size:11.5px; font-weight:650;}
+  input[type=text], input[type=url], select, textarea{border-color:#CBD8D0; border-radius:10px; background:var(--panel); padding:10px 12px;}
+  input:focus, select:focus, textarea:focus{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft);}
+  #source{min-height:360px; background:#FBFCFA; border-color:#C7D6CD; line-height:1.7;}
+  [data-ui="dark"] #source{background:#111A17;}
+  .btn{border-color:var(--line); border-radius:9px;}
+  .btn.primary{background:var(--brand); border-color:var(--brand); box-shadow:0 4px 12px rgba(35,107,96,.16);}
+  .btn.primary:hover{background:var(--brand); filter:brightness(1.07);}
+  .chip{border-color:var(--line); background:var(--panel);}
+  .chip:hover{background:var(--brand-soft); border-color:var(--brand); color:var(--brand);}
+  .theme, .pal{border-color:var(--line); background:var(--panel); border-radius:11px;}
+  .theme:hover, .pal:hover{border-color:#9FC2B5;}
+  .theme[aria-selected="true"], .pal[aria-selected="true"]{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft);}
+  .cbar{height:56px; padding:0 22px; background:rgba(255,254,250,.92); border-bottom-color:var(--line);}
+  [data-ui="dark"] .cbar{background:rgba(23,33,30,.94);}
+  .seg{background:var(--line-soft); border-radius:10px;}
+  .seg button[aria-selected="true"]{color:var(--brand);}
+  .stage{padding:28px 32px 38px; background-color:#EDF3F0; background-image:radial-gradient(rgba(35,107,96,.08) .7px, transparent .7px); background-size:18px 18px;}
+  [data-ui="dark"] .stage{background-color:#13201C; background-image:radial-gradient(rgba(103,179,165,.08) .7px, transparent .7px);}
+  .inbox{border-color:#D5E2DA; border-radius:13px; box-shadow:0 1px 2px rgba(31,48,42,.04);}
+  .inbox .av{background:var(--brand-soft); color:var(--brand);}
+  .frame{border-color:#D5E2DA; border-radius:16px; box-shadow:0 2px 3px rgba(27,53,42,.06), 0 24px 60px rgba(27,53,42,.13);}
+  .note{background:var(--brand-soft); color:var(--ink-2); border-left:3px solid var(--brand);}
+  .check{border:1px solid transparent;}
+  .linklist{border-color:var(--line);}
+  @media(max-width:1080px){.shell{grid-template-columns:60px 1fr; height:auto;}.pane{padding:20px 22px 44px;}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="logo"><span class="mark">D</span> Dispatch <span class="tag">Studio</span></div>
+  <input class="docname" id="docName" value="Untitled campaign" spellcheck="false">
+  <div class="grow"></div>
+  <span class="stat" id="sizeStat">&mdash;</span>
+  <button class="btn icon ghost" id="btnUiTheme" title="Toggle interface theme" aria-label="Toggle interface theme">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="menu-wrap">
+    <button class="btn primary" id="btnExport">
+      Export
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="menu" id="exportMenu">
+      <button data-act="gmail"><b>Copy for Gmail</b><i>Rich paste. Drops the style block, so no mobile stacking.</i></button>
+      <button data-act="html"><b>Copy HTML source</b><i>For Zoho, Mailchimp, or any real HTML import.</i></button>
+      <button data-act="text"><b>Copy plain-text version</b><i>Multipart fallback for text-only clients.</i></button>
+      <hr>
+      <button data-act="download"><b>Download .html</b></button>
+      <button data-act="downloadTxt"><b>Download .txt source</b><i>Your markup, to edit and reuse later.</i></button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- ==================== rail ==================== -->
+  <nav class="rail" id="rail">
+    <button data-pane="content" aria-selected="true" aria-label="Content">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10" stroke-linecap="round"/></svg>
+      <span class="tip">Content</span>
+    </button>
+    <button data-pane="design" aria-selected="false" aria-label="Layout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9" stroke-linecap="round"/></svg>
+      <span class="tip">Layout</span>
+    </button>
+    <button data-pane="brand" aria-selected="false" aria-label="Brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/></svg>
+      <span class="tip">Brand</span>
+    </button>
+    <button data-pane="review" aria-selected="false" aria-label="Review">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9"/></svg>
+      <span class="tip">Review</span>
+    </button>
+    <div class="sp"></div>
+  </nav>
+
+  <!-- ==================== side panel ==================== -->
+  <div class="panel">
+
+    <!-- ---------- content ---------- -->
+    <section class="pane active" id="pane-content">
+      <h2>Content</h2>
+      <div class="ed-tools">
+        <button class="btn sm" id="btnUpload">Upload .txt</button>
+        <button class="btn sm" id="btnClear">Clear</button>
+      </div>
+      <input type="file" id="fileInput" accept=".txt,text/plain" class="hidden">
+
+      <label class="f"><span>Start from a sample</span>
+        <select id="starter">
+          <option value="">Choose a starting point…</option>
+          <option value="thanks">Referral thank-you</option>
+          <option value="recap">Meeting / training recap</option>
+          <option value="newsletter">Monthly newsletter</option>
+          <option value="announce">Announcement</option>
+          <option value="update">Product update</option>
+          <option value="welcome">New patient welcome</option>
+          <option value="careplan">Care plan follow-up</option>
+          <option value="event">Workshop invitation</option>
+          <option value="hours">Practice hours update</option>
+        </select>
+      </label>
+
+      <textarea id="source" spellcheck="false"></textarea>
+
+      <div class="chips-row" id="chips">
+        <button class="chip" data-ins="# ">#&nbsp;title</button>
+        <button class="chip" data-ins="## ">##&nbsp;section</button>
+        <button class="chip" data-ins="~ ">~&nbsp;eyebrow</button>
+        <button class="chip" data-ins="- ">-&nbsp;bullet</button>
+        <button class="chip" data-ins="1. ">1.&nbsp;step</button>
+        <button class="chip" data-ins="+ ">+&nbsp;card</button>
+        <button class="chip" data-ins="| Label | Value">|&nbsp;table</button>
+        <button class="chip" data-ins="> ">&gt;&nbsp;callout</button>
+        <button class="chip" data-ins="[Button: Text | https://]">button</button>
+        <button class="chip" data-ins="[Stat: 92% | Label]">stat</button>
+        <button class="chip" data-ins="[Image: https:// | alt text]">image</button>
+        <button class="chip" data-ins="[Gallery: two | https:// | first alt | caption | https:// | second alt | caption]">gallery</button>
+        <button class="chip" data-ins="@ Name | Role | email">@&nbsp;signature</button>
+        <button class="chip" data-ins="---">divider</button>
+      </div>
+
+      <details class="guide">
+        <summary>Formatting reference</summary>
+        <table>
+          <tr><td>Subject: …</td><td>Subject line, kept out of the body</td></tr>
+          <tr><td>~ EYEBROW</td><td>Small caps label above the title</td></tr>
+          <tr><td># Title</td><td>Main heading</td></tr>
+          <tr><td>## Section</td><td>Section label</td></tr>
+          <tr><td>### Subtitle</td><td>Italic support line</td></tr>
+          <tr><td>- item</td><td>Bullet list</td></tr>
+          <tr><td>1. item</td><td>Numbered steps in accent circles</td></tr>
+          <tr><td>+ item</td><td>Bullets inside a tinted card</td></tr>
+          <tr><td>| Label | Value</td><td>Two-column spec row</td></tr>
+          <tr><td>&gt; text</td><td>Callout with an accent rule</td></tr>
+          <tr><td>[Stat: 92% | Label]</td><td>Metric tile (2–4 in a row)</td></tr>
+          <tr><td>[Button: Text | url]</td><td>Call-to-action button</td></tr>
+          <tr><td>[Image: url | alt]</td><td>Full-width image</td></tr>
+          <tr><td>[Gallery: two | url | alt | caption | url | alt | caption]</td><td>Responsive one, two, or three-photo gallery</td></tr>
+          <tr><td>@ Name | Role | email</td><td>Sign-off block</td></tr>
+          <tr><td>[text](url) · **bold**</td><td>Inline link and bold</td></tr>
+          <tr><td>---</td><td>Divider</td></tr>
+        </table>
+      </details>
+    </section>
+
+    <!-- ---------- design ---------- -->
+    <section class="pane" id="pane-design">
+      <h2>Layout</h2>
+      <div class="themes" id="themeGrid"></div>
+
+      <h3>Typography</h3>
+      <div class="r2">
+        <label class="f"><span>Headings</span>
+          <select id="headFont">
+            <option value="'Raleway',Helvetica,Arial,sans-serif|Raleway">Raleway</option>
+            <option value="'Inter',Helvetica,Arial,sans-serif|Inter">Inter</option>
+            <option value="'Fraunces',Georgia,serif|Fraunces">Fraunces</option>
+            <option value="Georgia,'Times New Roman',serif|">Georgia</option>
+            <option value="Helvetica,Arial,sans-serif|">Helvetica</option>
+          </select>
+        </label>
+        <label class="f"><span>Body</span>
+          <select id="bodyFont">
+            <option value="'Raleway',Helvetica,Arial,sans-serif|Raleway">Raleway</option>
+            <option value="'Inter',Helvetica,Arial,sans-serif|Inter">Inter</option>
+            <option value="Georgia,'Times New Roman',serif|">Georgia</option>
+            <option value="Helvetica,Arial,sans-serif|">Helvetica</option>
+          </select>
+        </label>
+      </div>
+      <div class="r2">
+        <label class="f"><span>Body size (px)</span><input type="text" id="fsBody" value="15"></label>
+        <label class="f"><span>Title size (px)</span><input type="text" id="fsTitle" value="26"></label>
+      </div>
+
+      <h3>Shape</h3>
+      <div class="r2">
+        <label class="f"><span>Email width (px)</span><input type="text" id="emailWidth" value="600"></label>
+        <label class="f"><span>Corner radius (px)</span><input type="text" id="radius" value="10"></label>
+      </div>
+      <label class="f"><span>Button shape</span>
+        <select id="btnShape">
+          <option value="6">Rounded</option>
+          <option value="0">Square</option>
+          <option value="40">Pill</option>
+        </select>
+      </label>
+      <label class="f"><span>Accent bars</span>
+        <select id="bars">
+          <option value="both">Top and bottom</option>
+          <option value="top">Top only</option>
+          <option value="none">None</option>
+        </select>
+      </label>
+    </section>
+
+    <!-- ---------- brand ---------- -->
+    <section class="pane" id="pane-brand">
+      <h2>Brand kit</h2>
+
+      <label class="f"><span>Brand name</span><input type="text" id="brandName" value="UpWell Psychiatry"></label>
+
+      <label class="f"><span>Logo</span></label>
+      <div class="logo-drop" id="logoDrop">
+        <div id="logoEmpty">Click or drop a PNG, JPG, or SVG</div>
+        <div id="logoHas" class="hidden"><img id="logoImg" alt=""></div>
+      </div>
+      <input type="file" id="logoInput" accept="image/*" class="hidden">
+      <div class="r2" style="margin-top:10px;">
+        <label class="f"><span>Logo width (px)</span><input type="text" id="logoWidth" value="120"></label>
+        <label class="f"><span>&nbsp;</span><button class="btn" id="btnLogoClear" style="width:100%;">Remove</button></label>
+      </div>
+
+      <h3>Palette</h3>
+      <div class="palettes" id="palGrid"></div>
+
+      <h3>Colors</h3>
+      <div class="r2">
+        <label class="f"><span>Primary</span><span class="swatch"><input type="color" id="cPrimary"><input type="text" id="tPrimary"></span></label>
+        <label class="f"><span>Accent</span><span class="swatch"><input type="color" id="cAccent"><input type="text" id="tAccent"></span></label>
+      </div>
+      <div class="r2">
+        <label class="f"><span>Card tint</span><span class="swatch"><input type="color" id="cTint"><input type="text" id="tTint"></span></label>
+        <label class="f"><span>Border</span><span class="swatch"><input type="color" id="cLine"><input type="text" id="tLine"></span></label>
+      </div>
+      <div class="r2">
+        <label class="f"><span>Body text</span><span class="swatch"><input type="color" id="cInk"><input type="text" id="tInk"></span></label>
+        <label class="f"><span>Page background</span><span class="swatch"><input type="color" id="cPage"><input type="text" id="tPage"></span></label>
+      </div>
+
+      <h3>Inbox &amp; footer</h3>
+      <label class="f"><span>Preheader (inbox preview text)</span><input type="text" id="preheader" placeholder="One line shown after the subject"></label>
+      <label class="f"><span>Footer text</span><textarea id="footerText" rows="3" placeholder="Company · Address&#10;Why they are receiving this"></textarea></label>
+      <label class="f"><span>Unsubscribe URL or merge tag</span><input type="text" id="unsubUrl" placeholder="{{unsubscribe_url}}"></label>
+      <div class="note">Internal mail doesn't need an unsubscribe link. Anything going to an outside list does.</div>
+    </section>
+
+    <!-- ---------- review ---------- -->
+    <section class="pane" id="pane-review">
+      <h2>Pre-send review</h2>
+      <div id="checks"></div>
+      <h3>Links found</h3>
+      <div id="links"></div>
+      <div class="note"><b>Before you send:</b> data-URI logos work for a Gmail paste but get stripped by most sending platforms. Host the image and swap the src if you're importing this anywhere else.</div>
+    </section>
+  </div>
+
+  <!-- ==================== canvas ==================== -->
+  <div class="canvas">
+    <div class="cbar">
+      <div class="seg" role="tablist">
+        <button id="vPreview" role="tab" aria-selected="true">Preview</button>
+        <button id="vCode" role="tab" aria-selected="false">HTML</button>
+        <button id="vText" role="tab" aria-selected="false">Plain text</button>
+      </div>
+      <div class="seg" role="tablist">
+        <button id="dDesk" role="tab" aria-selected="true">Desktop</button>
+        <button id="dMob" role="tab" aria-selected="false">Mobile</button>
+      </div>
+      <div class="grow"></div>
+      <span class="stat" id="readStat">&mdash;</span>
+    </div>
+
+    <div class="stage">
+      <div class="inbox" id="inboxCard">
+        <div class="av" id="inboxAv">U</div>
+        <div class="li">
+          <div class="l1"><b id="inboxFrom">UpWell Psychiatry</b><span class="t">now</span></div>
+          <div class="s" id="inboxSubject">Your subject line</div>
+          <div class="p" id="inboxPre">Preheader text appears here</div>
+        </div>
+      </div>
+      <div class="frame" id="frame"><iframe id="preview" title="Email preview"></iframe></div>
+      <pre class="code hidden" id="codeView"></pre>
+      <pre class="code plain hidden" id="textView"></pre>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ==================== themes ==================== */
+  // Each theme is a bundle of rendering switches, so the layouts stay genuinely
+  // different without six separate renderers to keep in sync.
+  var THEMES = {
+    signal: {
+      name: 'Signal', desc: 'Centered, classic, safe everywhere',
+      header: 'centered', align: 'center', label: 'caps', card: 'tinted',
+      titleRule: true, headerBand: false
+    },
+    beacon: {
+      name: 'Beacon', desc: 'Solid color masthead, reversed type',
+      header: 'band', align: 'center', label: 'caps', card: 'tinted',
+      titleRule: false, headerBand: true
+    },
+    ledger: {
+      name: 'Ledger', desc: 'Editorial, left aligned, airy',
+      header: 'left', align: 'left', label: 'rule', card: 'outlined',
+      titleRule: true, headerBand: false
+    },
+    stack: {
+      name: 'Stack', desc: 'Each section on its own card',
+      header: 'centered', align: 'left', label: 'caps', card: 'elevated',
+      titleRule: false, headerBand: false, sectionCards: true
+    },
+    pulse: {
+      name: 'Pulse', desc: 'High contrast section bars',
+      header: 'band', align: 'left', label: 'bar', card: 'tinted',
+      titleRule: false, headerBand: true
+    },
+    plain: {
+      name: 'Plain', desc: 'Minimal chrome, text forward',
+      header: 'minimal', align: 'left', label: 'plain', card: 'plain',
+      titleRule: false, headerBand: false
+    }
+  };
+
+  var PALETTES = {
+    ocean:    { name:'Ocean',    primary:'#022D41', accent:'#88BDBC', tint:'#F2F8F7', line:'#CBE2DF', ink:'#12303C', page:'#EDF3F3' },
+    midnight: { name:'Midnight', primary:'#131C34', accent:'#6366F1', tint:'#F3F4FD', line:'#DDE0F6', ink:'#1E2438', page:'#EEF0F7' },
+    forest:   { name:'Forest',   primary:'#14332B', accent:'#5FAE8C', tint:'#F1F8F4', line:'#CFE7DB', ink:'#17332C', page:'#EDF3EF' },
+    plum:     { name:'Plum',     primary:'#3A2244', accent:'#B47ACB', tint:'#F9F3FB', line:'#E7D6EE', ink:'#33263A', page:'#F2ECF4' },
+    ember:    { name:'Ember',    primary:'#3A1F1A', accent:'#DD7C5C', tint:'#FDF4F0', line:'#F3D8CC', ink:'#3A2621', page:'#F7EFEB' },
+    graphite: { name:'Graphite', primary:'#1F2933', accent:'#7B8794', tint:'#F5F7FA', line:'#E1E5EA', ink:'#22303C', page:'#EFF1F4' }
+  };
+
+  /* ==================== state ==================== */
+  var S = {
+    theme: 'signal', palette: 'ocean',
+    name: 'UpWell Psychiatry', logo: '', logoWidth: '120',
+    logoPlacement: 'header', bannerStyle: 'template', bannerSubtitle: '',
+    primary: '#022D41', accent: '#88BDBC', tint: '#F2F8F7',
+    line: '#CBE2DF', ink: '#12303C', page: '#EDF3F3',
+    headFont: "'Raleway',Helvetica,Arial,sans-serif", headWeb: 'Raleway',
+    bodyFont: "'Raleway',Helvetica,Arial,sans-serif", bodyWeb: 'Raleway',
+    fsBody: 15, fsTitle: 26,
+    width: 600, radius: 10, btnRadius: 6, bars: 'both',
+    preheader: '', footer: '', unsub: ''
+  };
+
+  var MUTED = '#7C8B95';
+
+  /* ==================== starters ==================== */
+  var STARTERS = {
+    thanks: [
+      'Subject: Referral Received — Thank You for Trusting Us',
+      '~ Referral Received', '# Thank You for Trusting Us', '',
+      'Hi there,', '',
+      'Thank you for referring your patient to us — we\u2019re honored that you trust us with their care, and we want you to know we\u2019re on it.',
+      '', '## What happens next', '',
+      'Our team will begin outreach right away via both email and phone, making **up to three attempts** to connect.', '',
+      '1. We were able to get them scheduled',
+      '2. We were unable to connect after our attempts',
+      '3. They declined our services', '',
+      '> **On provider matching** — we\u2019ll do everything we can to place them with your preferred provider. If that provider has an extensive wait, we\u2019ll offer another who is equally trained in that area.',
+      '', '[Button: Start another referral | https://example.com/refer]', '',
+      '@ The Care Team | Referral Coordination | referrals@example.com'
+    ].join('\n'),
+
+    recap: [
+      'Subject: Lunch & Learn Recap — ADHD in Women',
+      '~ Lunch & Learn Recap', '# ADHD in Women', '### Hannah Asher, ADHD Coach', '',
+      'Hi team,', '',
+      'Thanks for a full and lively hour. Here\u2019s the short version, plus what needs your eyes before next month.',
+      '', '## Quick updates', '',
+      '| Billing | Use CPT 96127 x 2 for GAD-7 and PHQ-9, reported per instrument',
+      '| Screeners | Adult ADHD, pregnancy, PTSD, and OCD now in intake',
+      '| Signatures | Builder demoed — files in the follow-up email',
+      '', '## Key takeaways', '',
+      '- Think **attention dysregulation, not deficit** — the trouble is directing attention, not lacking it.',
+      '- It is neurodevelopmental and lifelong, not something patients develop or outgrow.',
+      '- Masking and caregiving expectations hide it; it gets labeled anxiety or depression.',
+      '',
+      '> **From the group:** our screening tools were built around hyperactive presentations, so nuanced interviewing matters more.',
+      '', '## Follow-ups', '',
+      '+ Start billing 96127 for screener administration',
+      '+ Review intake questionnaires when completed',
+      '+ Sign up for a future session', '',
+      '@ Mary Ortega | Patient Care Coordinator | mary@example.com'
+    ].join('\n'),
+
+    newsletter: [
+      'Subject: What we shipped in March',
+      '~ Monthly Roundup', '# Three things worth your time', '',
+      'Hi there,', '',
+      'A short read on what changed this month and what it means for your team.',
+      '', '## By the numbers', '',
+      '[Stat: 42% | Faster onboarding]',
+      '[Stat: 1,280 | New teams]',
+      '[Stat: 99.9% | Uptime]',
+      '', '## Highlights', '',
+      '- **Faster search** across every workspace, now under 200ms.',
+      '- **Shared templates** so your team stops rebuilding the same doc.',
+      '- **Audit logs** available on every plan, not just Enterprise.',
+      '', '[Button: Read the full changelog | https://example.com/changelog]', '',
+      '---', '',
+      'As always, reply to this email if something is not working. A person reads it.'
+    ].join('\n'),
+
+    announce: [
+      'Subject: We\u2019re expanding to Washington',
+      '~ Announcement', '# We\u2019re expanding to Washington', '',
+      'Starting April 1, we\u2019re accepting new patients across Washington in addition to Oregon.',
+      '', '## What this means', '',
+      '| Coverage | Oregon and Washington',
+      '| Wait time | Under two weeks for most new patients',
+      '| Care model | Telehealth, from home',
+      '',
+      '> Existing patients are unaffected. Your provider, schedule, and billing stay exactly the same.',
+      '', '[Button: Refer a patient | https://example.com/refer]'
+    ].join('\n'),
+
+    update: [
+      'Subject: Version 4.0 is here',
+      '~ Product Update', '# Version 4.0', '### Faster, quieter, and finally offline',
+      '', 'Here is everything in this release.', '',
+      '## New', '',
+      '+ Offline mode that syncs when you reconnect',
+      '+ Keyboard-first command palette',
+      '+ Bulk actions across every list view',
+      '', '## Fixed', '',
+      '- Exports no longer time out on large workspaces.',
+      '- Notification digests respect your timezone.',
+      '', '[Button: See the release notes | https://example.com/releases]'
+    ].join('\n'),
+
+    welcome: [
+      'Subject: Welcome to {{practice_name}}',
+      '~ A calm start', '# Welcome to your next step', '',
+      'Hi there,', '',
+      'We are glad you are here. This note gives you the few details that make getting started feel straightforward.',
+      '', '## Before your first visit', '',
+      '+ Complete the intake forms before {{appointment_date}}',
+      '+ Bring a current medication list and any questions you want to discuss',
+      '+ Contact our team through {{secure_channel}} if you need help',
+      '', '[Button: Complete your forms | https://example.com/forms]', '',
+      '> Your information is handled with care. Please use the secure channel for patient-specific questions.', '',
+      '@ The Care Team | Patient Care | hello@example.com'
+    ].join('\n'),
+
+    careplan: [
+      'Subject: Following up on our visit',
+      '~ Care follow-up', '# Your next steps', '',
+      'Hi {{patient_name}},', '',
+      'Thank you for the thoughtful conversation at your visit. Here is a short summary of what we agreed to carry forward.',
+      '', '## Your plan', '',
+      '| Focus | {{care_focus}}',
+      '| This week | {{this_week}}',
+      '| Next check-in | {{next_checkin}}',
+      '',
+      '> If something feels unclear or changes before your next visit, please reach out through the secure patient portal.', '',
+      '[Button: Open your care plan | https://example.com/portal]', '',
+      '@ The Care Team | Patient Care | hello@example.com'
+    ].join('\n'),
+
+    event: [
+      'Subject: You’re invited: {{event_name}}',
+      '~ Save your seat', '# A useful hour with the care team', '',
+      'We are hosting {{event_name}} for patients and families who want practical, approachable guidance on {{event_topic}}.',
+      '', '## Details', '',
+      '| When | {{event_date}}',
+      '| Where | {{event_location}}',
+      '| Format | {{event_format}}',
+      '',
+      'Bring your questions. We will leave time for an open conversation at the end.', '',
+      '[Button: Reserve your spot | https://example.com/events]', '',
+      '@ The Care Team | Community Programs | hello@example.com'
+    ].join('\n'),
+
+    hours: [
+      'Subject: Practice hours and coverage update',
+      '~ A scheduling note', '# Here when you need us', '',
+      'A quick update so you know when our team is available over {{date_range}}.',
+      '', '## At a glance', '',
+      '| Office hours | {{office_hours}}',
+      '| Phone coverage | {{phone_coverage}}',
+      '| Secure messages | {{message_timing}}',
+      '',
+      '> For urgent concerns, use your established care instructions or local emergency services. This inbox is not monitored continuously.', '',
+      'Thank you for planning with us.', '',
+      '@ The Care Team | {{practice_name}} | hello@example.com'
+    ].join('\n')
+  };
+
+  /* ==================== inline formatting ==================== */
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function inline(s) {
+    var out = esc(s);
+    out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (m, t, u) {
+      var href = u.trim();
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(href)) { href = 'mailto:' + href; }
+      return '<a href="' + href + '" style="color:' + S.primary + '; font-weight:600;">' + t + '</a>';
+    });
+    out = out.replace(/(^|[\s(])([\w.+-]+@[\w-]+\.[\w.]{2,})/g, function (m, p, mail) {
+      return p + '<a href="mailto:' + mail + '" style="color:' + S.primary + ';">' + mail + '</a>';
+    });
+    out = out.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:' + S.primary + ';">$1</strong>');
+    return out;
+  }
+
+  function stripInline(s) {
+    return String(s)
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 ($2)')
+      .replace(/\*\*([^*]+)\*\*/g, '$1');
+  }
+
+  /* ==================== parser ==================== */
+  function parse(text) {
+    var lines = String(text).replace(/\r\n/g, '\n').split('\n');
+    var blocks = [], subject = '', i = 0;
+
+    function group(type, re, strip) {
+      var items = [];
+      while (i < lines.length && re.test(lines[i].trim())) {
+        items.push(lines[i].trim().replace(strip, ''));
+        i++;
+      }
+      blocks.push({ type: type, items: items });
+    }
+
+    while (i < lines.length) {
+      var line = lines[i].trim();
+      if (!line) { i++; continue; }
+
+      if (/^subject\s*:/i.test(line)) { subject = line.replace(/^subject\s*:/i, '').trim(); i++; continue; }
+      if (line === '---' || line === '***') { blocks.push({ type: 'divider' }); i++; continue; }
+      if (line.indexOf('~ ') === 0) { blocks.push({ type: 'eyebrow', text: line.slice(2).trim() }); i++; continue; }
+      if (line.indexOf('### ') === 0) { blocks.push({ type: 'sub', text: line.slice(4).trim() }); i++; continue; }
+      if (line.indexOf('## ') === 0) { blocks.push({ type: 'h2', text: line.slice(3).trim() }); i++; continue; }
+      if (line.indexOf('# ') === 0) { blocks.push({ type: 'h1', text: line.slice(2).trim() }); i++; continue; }
+      if (line.indexOf('> ') === 0) { blocks.push({ type: 'callout', text: line.slice(2).trim() }); i++; continue; }
+      if (line.indexOf('@ ') === 0) {
+        blocks.push({ type: 'sign', parts: line.slice(2).split('|').map(function (x) { return x.trim(); }) });
+        i++; continue;
+      }
+
+      var btn = line.match(/^\[Button:\s*([^|\]]+)\|\s*([^\]]+)\]$/i);
+      if (btn) { blocks.push({ type: 'button', text: btn[1].trim(), url: btn[2].trim() }); i++; continue; }
+
+      var img = /^\[Image:\s*([^\]]*)\]$/i.exec(line);
+      if (img && img[1].trim()) {
+        var ip = img[1].split('|').map(function (x) { return x.trim(); });
+        var imgBlock = { type: 'image', url: ip[0], alt: ip[1] || '' };
+        if (ip[2]) { imgBlock.caption = ip[2]; }
+        blocks.push(imgBlock);
+        i++; continue;
+      }
+
+      var gb = /^\[Gallery:\s*([^\]]*)\]$/i.exec(line);
+      if (gb && gb[1].trim()) {
+        var gp = gb[1].split('|').map(function (x) { return x.trim(); });
+        var layout = /^(single|two|three)$/i.test(gp[0]) ? gp.shift().toLowerCase() : 'single';
+        var galleryItems = [];
+        for (var gi = 0; gi < gp.length; gi += 3) {
+          if (!gp[gi]) { continue; }
+          galleryItems.push({ url: gp[gi], alt: gp[gi + 1] || '', caption: gp[gi + 2] || '' });
+        }
+        if (galleryItems.length) { blocks.push({ type: 'gallery', layout: layout, items: galleryItems }); }
+        i++; continue;
+      }
+
+      var qb = /^\[Quote:\s*([^\]]*)\]$/i.exec(line);
+      if (qb && qb[1].trim()) {
+        var qp = qb[1].split('|');
+        blocks.push({ type: 'quote', text: qp[0].trim(), name: (qp[1] || '').trim() });
+        i++; continue;
+      }
+
+      var fb = /^\[Feature:\s*([^\]]*)\]$/i.exec(line);
+      if (fb && fb[1].trim()) {
+        var fp = fb[1].split('|');
+        blocks.push({ type: 'feature', url: fp[0].trim(), alt: (fp[1] || '').trim(), heading: (fp[2] || '').trim(), body: fp.slice(3).join('|').trim() });
+        i++; continue;
+      }
+
+      if (/^\[Stat:/i.test(line)) {
+        var stats = [];
+        while (i < lines.length) {
+          var m = lines[i].trim().match(/^\[Stat:\s*([^|\]]+)(?:\|\s*([^\]]*))?\]$/i);
+          if (!m) { break; }
+          stats.push({ value: m[1].trim(), label: (m[2] || '').trim() });
+          i++;
+        }
+        blocks.push({ type: 'stats', items: stats });
+        continue;
+      }
+
+      if (/^[-*]\s+/.test(line)) { group('ul', /^[-*]\s+/, /^[-*]\s+/); continue; }
+      if (/^\d+[.)]\s+/.test(line)) { group('ol', /^\d+[.)]\s+/, /^\d+[.)]\s+/); continue; }
+      if (/^\+\s+/.test(line)) { group('card', /^\+\s+/, /^\+\s+/); continue; }
+
+      if (line.indexOf('|') === 0) {
+        var rows = [];
+        while (i < lines.length && lines[i].trim().indexOf('|') === 0) {
+          var p = lines[i].trim().replace(/^\|/, '').split('|');
+          rows.push({ label: (p[0] || '').trim(), value: p.slice(1).join('|').trim() });
+          i++;
+        }
+        blocks.push({ type: 'table', rows: rows });
+        continue;
+      }
+
+      var para = [];
+      while (i < lines.length) {
+        var l = lines[i].trim();
+        if (!l || /^(~ |#|> |\+\s|\||@ |\d+[.)]\s|[-*]\s|---|\*\*\*|\[Button:|\[Image:|\[Gallery:|\[Quote:|\[Feature:|\[Stat:|subject\s*:)/i.test(l)) { break; }
+        para.push(l); i++;
+      }
+      if (para.length) { blocks.push({ type: 'p', lines: para }); }
+    }
+    return { subject: subject, blocks: blocks };
+  }
+
+  /* ==================== email rendering ==================== */
+  function row(inner, padTop, padBottom) {
+    return '    <tr>\n      <td class="pad" style="padding:' + (padTop || '0') + ' 32px ' +
+      (padBottom || '0') + ' 32px;">\n' + inner + '\n      </td>\n    </tr>\n';
+  }
+  function gap(px) { return '    <tr><td style="height:' + px + 'px; line-height:' + px + 'px; font-size:' + px + 'px;">&nbsp;</td></tr>\n'; }
+
+  function sectionLabel(text, T) {
+    var HF = S.headFont;
+    if (T.label === 'bar') {
+      return row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:' + S.primary + '; border-radius:' + S.radius + 'px;"><tr>' +
+        '<td width="5" style="width:5px; background-color:' + S.accent + ';">&nbsp;</td>' +
+        '<td style="padding:10px 15px; font-family:' + HF + '; font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:#FFFFFF;">' + inline(text) + '</td>' +
+        '</tr></table>', '18px', '10px');
+    }
+    if (T.label === 'rule') {
+      return row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>' +
+        '<td width="10" valign="middle" style="width:10px; padding-bottom:8px;"><div style="width:6px; height:6px; background-color:' + S.accent + '; border-radius:50%;">&nbsp;</div></td>' +
+        '<td style="border-bottom:1px solid ' + S.line + '; padding-bottom:8px; font-family:' + HF + '; font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:' + S.primary + ';">' + inline(text) + '</td>' +
+        '</tr></table>', '20px', '12px');
+    }
+    if (T.label === 'plain') {
+      return row('        <p style="margin:0; font-family:' + HF + '; font-size:14px; font-weight:700; color:' + S.primary + ';">' + inline(text) + '</p>', '18px', '8px');
+    }
+    return row('        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td width="18" style="width:18px; padding-right:8px;"><div style="height:2px; background-color:' + S.accent + ';">&nbsp;</div></td><td style="font-family:' + HF + '; font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:' + MUTED + ';">' + inline(text) + '</td></tr></table>', '18px', '9px');
+  }
+
+  function cardWrap(inner, T) {
+    if (T.card === 'plain') { return inner; }
+    var style = 'border-radius:' + S.radius + 'px;';
+    if (T.card === 'tinted') { style += ' background-color:' + S.tint + '; border:1px solid ' + S.line + '; border-left:4px solid ' + S.accent + ';'; }
+    if (T.card === 'outlined') { style += ' background-color:#FFFFFF; border:1px solid ' + S.line + ';'; }
+    if (T.card === 'elevated') { style += ' background-color:#FFFFFF; border:1px solid ' + S.line + ';'; }
+    return '        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="' + style + '">\n' +
+      '          <tr><td style="padding:19px 20px;">\n' + inner + '\n          </td></tr>\n        </table>';
+  }
+
+  function usesHeaderBanner(T) {
+    return S.bannerStyle !== 'clean' && (S.bannerStyle === 'solid' || S.bannerStyle === 'soft' || T.headerBand);
+  }
+
+  function renderBlocks(blocks, T) {
+    var out = '', HF = S.headFont, BF = S.bodyFont, A = S.accent, P = S.primary,
+        I = S.ink, L = S.line, fs = S.fsBody, lh = Math.round(S.fsBody * 1.66);
+
+    var feat = 0;
+    blocks.forEach(function (b) {
+      if (b.type === 'eyebrow') {
+        if (usesHeaderBanner(T)) { return; }   // the banner already carries the eyebrow
+        out += '    <tr>\n      <td class="pad" align="' + T.align + '" style="padding:0 32px 2px 32px;">\n' +
+          '        <p style="margin:0; font-family:' + HF + '; font-size:11px; letter-spacing:.22em; text-transform:uppercase; font-weight:700; color:' + A + ';">' + inline(b.text) + '</p>\n      </td>\n    </tr>\n';
+
+      } else if (b.type === 'h1') {
+        if (usesHeaderBanner(T)) { return; }
+        out += '    <tr>\n      <td class="pad" align="' + T.align + '" style="padding:6px 32px 0 32px;">\n' +
+          '        <h1 class="title" style="margin:0; font-family:' + HF + '; font-size:' + S.fsTitle + 'px; line-height:' + Math.round(S.fsTitle * 1.28) + 'px; font-weight:700; color:' + P + ';">' + inline(b.text) + '</h1>\n      </td>\n    </tr>\n';
+        if (T.titleRule) {
+          out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-top:2px solid ' + L + '; height:1px; line-height:1px; font-size:1px;">&nbsp;</td></tr></table>', '16px', '0');
+        }
+        out += gap(14);
+
+      } else if (b.type === 'sub') {
+        if (usesHeaderBanner(T)) { return; }
+        out += '    <tr>\n      <td class="pad" align="' + T.align + '" style="padding:2px 32px 10px 32px;">\n' +
+          '        <p style="margin:0; font-family:' + BF + '; font-size:13px; line-height:20px; font-style:italic; color:' + MUTED + ';">' + inline(b.text) + '</p>\n      </td>\n    </tr>\n';
+
+      } else if (b.type === 'h2') {
+        out += sectionLabel(b.text, T);
+
+      } else if (b.type === 'p') {
+        out += row('        <p style="margin:0; font-family:' + BF + '; font-size:' + fs + 'px; line-height:' + lh + 'px; color:' + I + ';">' +
+          b.lines.map(inline).join('<br>') + '</p>', '0', '14px');
+
+      } else if (b.type === 'divider') {
+        out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-top:1px solid ' + L + '; height:1px; line-height:1px; font-size:1px;">&nbsp;</td></tr></table>', '6px', '18px');
+
+      } else if (b.type === 'ul' || b.type === 'card') {
+        var rows = '';
+        b.items.forEach(function (it, n) {
+          var pb = n === b.items.length - 1 ? '0' : '9px';
+          var bullet = b.type === 'card' ? '&#10003;' : '&bull;';
+          rows += '            <tr>\n' +
+            '              <td width="22" valign="top" style="width:22px; font-family:' + BF + '; font-size:' + (b.type === 'card' ? '14' : '18') + 'px; line-height:' + lh + 'px; color:' + A + ';">' + bullet + '</td>\n' +
+            '              <td valign="top" style="font-family:' + BF + '; font-size:' + fs + 'px; line-height:' + lh + 'px; color:' + I + '; padding-bottom:' + pb + ';">' + inline(it) + '</td>\n' +
+            '            </tr>\n';
+        });
+        var tbl = '        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">\n' + rows + '        </table>';
+        out += row(b.type === 'card' ? cardWrap(tbl, T) : tbl, '0', '16px');
+
+      } else if (b.type === 'ol') {
+        var orows = '';
+        b.items.forEach(function (it, n) {
+          var pb = n === b.items.length - 1 ? '0' : '11px';
+          orows += '            <tr>\n' +
+            '              <td width="34" valign="top" style="width:34px;">\n' +
+            '                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="24" style="width:24px;"><tr><td align="center" height="24" style="width:24px; height:24px; background-color:' + A + '; border-radius:12px; font-family:' + HF + '; font-size:12px; line-height:24px; font-weight:700; color:' + P + ';">' + (n + 1) + '</td></tr></table>\n' +
+            '              </td>\n' +
+            '              <td valign="top" style="font-family:' + BF + '; font-size:' + fs + 'px; line-height:' + lh + 'px; color:' + I + '; padding-bottom:' + pb + ';">' + inline(it) + '</td>\n' +
+            '            </tr>\n';
+        });
+        out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">\n' + orows + '        </table>', '0', '16px');
+
+      } else if (b.type === 'stats') {
+        var n = b.items.length || 1;
+        var w = Math.floor(100 / n);
+        var cells = '';
+        b.items.forEach(function (st) {
+          cells += '            <td class="stack" width="' + w + '%" valign="top" align="center" style="width:' + w + '%; padding:16px 8px; background-color:' + S.tint + '; border:1px solid ' + L + '; border-radius:' + S.radius + 'px;">\n' +
+            '              <p style="margin:0; font-family:' + HF + '; font-size:27px; line-height:32px; font-weight:700; letter-spacing:-.02em; color:' + P + ';">' + esc(st.value) + '</p>\n' +
+            '              <p style="margin:2px 0 0 0; font-family:' + BF + '; font-size:12px; line-height:17px; color:' + MUTED + ';">' + esc(st.label) + '</p>\n' +
+            '            </td>\n';
+          cells += '            <td class="stack" width="10" style="width:10px; font-size:1px; line-height:1px;">&nbsp;</td>\n';
+        });
+        out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">\n          <tr>\n' + cells + '          </tr>\n        </table>', '0', '16px');
+
+      } else if (b.type === 'table') {
+        var trs = '';
+        b.rows.forEach(function (r, n2) {
+          var bg = n2 % 2 === 0 ? '#FFFFFF' : S.tint;
+          trs += '          <tr>\n' +
+            '            <td class="stack" width="32%" valign="top" style="width:32%; background-color:' + S.tint + '; padding:12px 14px; font-family:' + HF + '; font-size:10px; line-height:17px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:' + P + '; border-bottom:1px solid ' + L + ';">' + inline(r.label) + '</td>\n' +
+            '            <td class="stack" valign="top" style="background-color:' + (n2 % 2 === 0 ? '#FFFFFF' : S.tint) + '; padding:12px 14px; font-family:' + BF + '; font-size:14px; line-height:21px; color:' + I + '; border-bottom:1px solid ' + L + ';">' + inline(r.value) + '</td>\n' +
+            '          </tr>\n';
+        });
+        out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ' + L + '; border-radius:6px; overflow:hidden;">\n' + trs + '        </table>', '0', '16px');
+
+      } else if (b.type === 'callout') {
+        out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:' + S.tint + '; border:1px solid ' + L + '; border-radius:' + S.radius + 'px;"><tr>\n' +
+          '          <td style="border-left:3px solid ' + A + '; padding:13px 16px; font-family:' + BF + '; font-size:' + fs + 'px; line-height:' + lh + 'px; color:' + I + ';">' + inline(b.text) + '</td>\n' +
+          '        </tr></table>', '0', '18px');
+
+      } else if (b.type === 'button') {
+        // Windows Outlook renders with Word, not a browser: it drops padding on
+        // inline-block anchors (the button collapses to a bare link) and cannot
+        // round the td. The VML roundrect inside the mso conditional is what
+        // Outlook actually renders; everything else sees the normal anchor.
+        var btnH = 44;
+        var arcsize = Math.min(50, Math.round((S.btnRadius * 2) / btnH * 100));
+        // Word needs a pixel width; the anchor's is set by its text, so measure
+        // the same way — about 8px per bold 14px character plus the 26px of
+        // horizontal padding on each side, clamped to sane ends.
+        var btnW = Math.max(120, Math.min(520, b.text.length * 8 + 52));
+        var vmlButton =
+          '            <!--[if mso]>\n' +
+          '              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="' + b.url + '" style="height:' + btnH + 'px;v-text-anchor:middle;width:' + btnW + 'px;" arcsize="' + arcsize + '%" strokecolor="' + P + '" fillcolor="' + P + '">\n' +
+          '                <w:anchorlock/>\n' +
+          '                <center style="color:#FFFFFF;font-family:' + HF + ';font-size:14px;font-weight:700;">' + esc(b.text) + '</center>\n' +
+          '              </v:roundrect>\n' +
+          '            <![endif]-->\n' +
+          '            <!--[if !mso]><!-->\n' +
+          '              <a href="' + b.url + '" style="display:inline-block; padding:13px 26px; background-color:' + P + '; font-family:' + HF + '; font-size:14px; line-height:18px; letter-spacing:.01em; font-weight:700; color:#FFFFFF; text-decoration:none; border-radius:' + S.btnRadius + 'px;">' + esc(b.text) + '</a>\n' +
+          '            <!--<![endif]-->';
+        out += row('        <table role="presentation" cellpadding="0" cellspacing="0" border="0"' + (T.align === 'center' ? ' align="center"' : '') + '><tr>\n' +
+          '          <td align="center" bgcolor="' + P + '" style="border-radius:' + S.btnRadius + 'px;">\n' +
+          vmlButton + '\n' +
+          '          </td>\n        </tr></table>', '2px', '20px');
+
+      } else if (b.type === 'image') {
+        var im = '        <img src="' + b.url + '" alt="' + esc(b.alt) + '" width="' + (S.width - 64) + '" style="display:block; width:100%; max-width:' + (S.width - 64) + 'px; height:auto; border-radius:' + S.radius + 'px; border:1px solid ' + L + ';">';
+        if (b.caption) {
+          im += '\n        <p style="margin:10px 8px 0 8px; font-family:' + BF + '; font-size:12px; line-height:18px; color:' + MUTED + '; text-align:center;">' + esc(b.caption) + '</p>';
+        }
+        out += row(im, '0', '18px');
+
+      } else if (b.type === 'gallery') {
+        var galleryCount = b.layout === 'three' ? 3 : b.layout === 'two' ? 2 : 1;
+        var galleryWidth = Math.floor(100 / galleryCount);
+        var galleryCells = '';
+        b.items.slice(0, galleryCount).forEach(function (item, galleryIndex) {
+          var imageWidth = Math.floor((S.width - 64 - (galleryCount - 1) * 12) / galleryCount);
+          var galleryCell = '            <td class="stack" valign="top" width="' + galleryWidth + '%" style="width:' + galleryWidth + '%;">' +
+            '<img src="' + item.url + '" alt="' + esc(item.alt) + '" width="' + imageWidth + '" style="display:block; width:100%; max-width:' + imageWidth + 'px; height:auto; border-radius:' + S.radius + 'px; border:1px solid ' + L + ';">' +
+            (item.caption ? '<p style="margin:8px 4px 0 4px; font-family:' + BF + '; font-size:11px; line-height:16px; color:' + MUTED + '; text-align:center;">' + esc(item.caption) + '</p>' : '') +
+            '</td>\n';
+          galleryCells += galleryCell;
+          if (galleryIndex < galleryCount - 1) galleryCells += '            <td width="12" style="width:12px; font-size:1px; line-height:1px;">&nbsp;</td>\n';
+        });
+        out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>\n' + galleryCells + '        </tr></table>', '0', '18px');
+
+      } else if (b.type === 'quote') {
+        // A tinted social-proof card: big serif mark, italic pull line, name.
+        var qInner = '<p style="margin:0; font-family:Georgia,\'Times New Roman\',serif; font-size:38px; line-height:12px; font-weight:700; color:' + A + ';">&ldquo;</p>' +
+          '<p style="margin:12px 0 0 0; font-family:' + BF + '; font-size:' + fs + 'px; line-height:' + lh + 'px; font-style:italic; color:' + I + ';">' + inline(b.text) + '</p>' +
+          (b.name ? '<p style="margin:14px 0 0 0; font-family:' + HF + '; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:' + P + ';">&mdash; ' + esc(b.name) + '</p>' : '');
+        out += row(cardWrap(qInner, T), '0', '16px');
+
+      } else if (b.type === 'feature') {
+        // Photo beside text, alternating sides like an editorial zig-zag.
+        var flip = feat % 2 === 1; feat++;
+        var wImg2 = Math.round((S.width - 96) * 0.46);
+        var fImg = '<td class="stack" valign="middle" width="46%" style="width:46%; ' + (flip ? 'padding-left:20px;' : 'padding-right:20px;') + '">' +
+          '<img src="' + b.url + '" alt="' + esc(b.alt) + '" width="' + wImg2 + '" style="display:block; width:100%; max-width:' + wImg2 + 'px; height:auto; border-radius:' + S.radius + 'px;">' +
+          '</td>';
+        var fTxt = '<td class="stack" valign="middle" width="54%" style="width:54%;">' +
+          '<p style="margin:0; font-family:' + HF + '; font-size:17px; line-height:23px; font-weight:700; color:' + P + ';">' + inline(b.heading || b.alt || '') + '</p>' +
+          '<p style="margin:6px 0 0 0; font-family:' + BF + '; font-size:' + fs + 'px; line-height:' + lh + 'px; color:' + I + ';">' + inline(b.body || '') + '</p>' +
+          '</td>';
+        out += row('        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>' +
+          (flip ? fTxt + fImg : fImg + fTxt) + '</tr></table>', '0', '16px');
+
+      } else if (b.type === 'sign') {
+        var nm = b.parts[0] || '', role = b.parts[1] || '', contact = b.parts[2] || '';
+        var sig = '        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-top:1px solid ' + L + '; padding-top:16px;">' +
+          '<p style="margin:0; font-family:' + HF + '; font-size:' + fs + 'px; line-height:' + lh + 'px; font-weight:700; color:' + P + ';">' + inline(nm) + '</p>';
+        if (role) { sig += '\n        <p style="margin:0; font-family:' + BF + '; font-size:13px; line-height:20px; color:' + MUTED + ';">' + inline(role) + '</p>'; }
+        if (contact) { sig += '\n        <p style="margin:3px 0 0 0; font-family:' + BF + '; font-size:13px; line-height:20px;">' + inline(contact) + '</p>'; }
+        sig += '</td></tr></table>';
+        out += row(sig, '8px', '20px');
+      }
+    });
+    return out;
+  }
+
+  function headerBlock(parsed, T) {
+    var HF = S.headFont, P = S.primary, A = S.accent;
+    var eyebrow = '', title = '', subtitle = '';
+    parsed.blocks.forEach(function (b) {
+      if (b.type === 'eyebrow' && !eyebrow) { eyebrow = b.text; }
+      if (b.type === 'h1' && !title) { title = b.text; }
+      // A banner owns the supporting line. Moving the authored subhead into
+      // the masthead keeps the first viewport cohesive instead of splitting
+      // the title treatment from its context.
+      if (b.type === 'sub' && !subtitle) { subtitle = b.text; }
+    });
+
+    var initial = esc((S.name || 'P').trim().charAt(0).toUpperCase());
+    var banner = usesHeaderBanner(T);
+    var softBanner = S.bannerStyle === 'soft';
+    var lockupInk = banner ? (softBanner ? P : '#FFFFFF') : P;
+    var lockupMuted = banner ? (softBanner ? MUTED : A) : MUTED;
+    var lockupMark = banner ? A : P;
+    var lockupMarkInk = banner ? P : '#FFFFFF';
+    var lockup = '<table role="presentation" cellpadding="0" cellspacing="0" border="0"' + (T.header === 'left' || T.header === 'minimal' ? '' : ' align="center"') + '><tr>' +
+      '<td width="34" height="34" align="center" valign="middle" style="width:34px; height:34px; background-color:' + lockupMark + '; border-radius:10px; font-family:Georgia,\'Times New Roman\',serif; font-size:18px; line-height:34px; font-weight:700; color:' + lockupMarkInk + ';">' + initial + '</td>' +
+      '<td style="padding-left:10px;" align="left">' +
+      '<p style="margin:0; font-family:' + HF + '; font-size:15px; line-height:18px; font-weight:700; color:' + lockupInk + ';">' + esc(S.name) + '</p>' +
+      '<p style="margin:2px 0 0 0; font-family:' + S.bodyFont + '; font-size:9px; line-height:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:' + lockupMuted + ';">Care, clearly coordinated</p>' +
+      '</td></tr></table>';
+    var logoImg = S.logo && S.logoPlacement === 'header'
+      ? '<img src="' + S.logo + '" width="' + S.logoWidth + '" alt="' + esc(S.name) + '" style="display:block; width:' + S.logoWidth + 'px; max-width:100%; height:auto; margin:0' + (T.header === 'left' || T.header === 'minimal' ? '' : ' auto') + ';">'
+      : lockup;
+
+    var accentRule = '<table role="presentation" cellpadding="0" cellspacing="0" border="0"' + (T.align === 'left' ? '' : ' align="center"') + '><tr><td width="42" height="4" style="width:42px; height:4px; background-color:' + A + '; font-size:4px; line-height:4px;">&nbsp;</td></tr></table>';
+
+    if (banner) {
+      var bannerBg = softBanner ? S.tint : P;
+      var bannerInk = softBanner ? P : '#FFFFFF';
+      var bannerMuted = softBanner ? MUTED : A;
+      return '    <tr>\n      <td class="pad" align="' + T.align + '" style="background-color:' + bannerBg + '; padding:30px 32px 34px 32px;">\n' +
+        '        ' + logoImg + '\n' +
+        '        ' + accentRule + '\n' +
+        (eyebrow ? '        <p style="margin:16px 0 0 0; font-family:' + HF + '; font-size:10px; line-height:14px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:' + bannerMuted + ';">' + inline(eyebrow) + '</p>\n' : '') +
+        (title ? '        <h1 class="title" style="max-width:520px; margin:8px 0 0 0; font-family:' + HF + '; font-size:' + S.fsTitle + 'px; line-height:' + Math.round(S.fsTitle * 1.25) + 'px; font-weight:700; letter-spacing:-.02em; color:' + bannerInk + ';">' + inline(title) + '</h1>\n' : '') +
+        (subtitle ? '        <p style="max-width:470px; margin:11px 0 0 0; font-family:' + S.bodyFont + '; font-size:13px; line-height:20px; color:' + bannerMuted + ';">' + inline(subtitle) + '</p>\n' : '') +
+        '      </td>\n    </tr>\n';
+    }
+    if (T.header === 'minimal') {
+      return '    <tr>\n      <td class="pad" align="left" style="padding:26px 32px 15px 32px; border-bottom:1px solid ' + S.line + ';">' + logoImg + '\n' + accentRule + '</td>\n    </tr>\n';
+    }
+    var al = T.header === 'left' ? 'left' : 'center';
+    return '    <tr>\n      <td class="pad" align="' + al + '" style="padding:28px 32px 20px 32px; border-bottom:1px solid ' + S.line + ';">' + logoImg + '\n' + accentRule + '</td>\n    </tr>\n';
+  }
+
+  function placedLogoRow(T, placement) {
+    if (!S.logo || S.logoPlacement !== placement) { return ''; }
+    var al = placement === 'footer' ? 'center' : (T.align === 'left' ? 'left' : 'center');
+    var img = '<img src="' + S.logo + '" width="' + S.logoWidth + '" alt="' + esc(S.name) + '" style="display:block; width:' + S.logoWidth + 'px; max-width:' + S.logoWidth + 'px; height:auto; margin:0' + (al === 'center' ? ' auto' : '') + ';">';
+    var padding = placement === 'footer' ? '0 32px 10px 32px' : '0 32px 18px 32px';
+    return '    <tr>\n      <td class="pad" align="' + al + '" style="padding:' + padding + ';">' + img + '</td>\n    </tr>\n';
+  }
+
+  function buildEmail(parsed) {
+    var T = THEMES[S.theme], W = S.width, P = S.primary, A = S.accent;
+    var fams = [];
+    if (S.headWeb) { fams.push(S.headWeb + ':wght@400;600;700'); }
+    if (S.bodyWeb && S.bodyWeb !== S.headWeb) { fams.push(S.bodyWeb + ':wght@400;600;700'); }
+    var webfont = fams.length
+      ? '<link href="https://fonts.googleapis.com/css2?family=' + fams.join('&family=') + '&display=swap" rel="stylesheet">\n'
+      : '';
+
+    var pre = S.preheader
+      ? '<div style="display:none; font-size:1px; color:' + S.page + '; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">' +
+        esc(S.preheader) + '&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>\n'
+      : '';
+
+    var footer = '';
+    if (S.footer || S.unsub) {
+      var f = esc(S.footer).split('\n').join('<br>');
+      var u = S.unsub ? '<br><a href="' + S.unsub + '" style="color:' + MUTED + '; text-decoration:underline;">Unsubscribe</a>' : '';
+      footer = '  <table role="presentation" class="wrap" width="' + W + '" cellpadding="0" cellspacing="0" border="0" style="width:' + W + 'px; max-width:' + W + 'px;">\n' +
+        '    <tr><td class="pad" align="center" style="border-top:1px solid ' + S.line + '; padding:18px 32px 8px 32px; font-family:' + S.bodyFont + '; font-size:11px; line-height:18px; color:' + MUTED + ';">' + f + u + '</td></tr>\n  </table>\n';
+    }
+
+    var topBar = (S.bars === 'both' || S.bars === 'top')
+      ? '    <tr><td style="background-color:' + A + '; height:5px; line-height:5px; font-size:5px;">&nbsp;</td></tr>\n' : '';
+    var botBar = (S.bars === 'both')
+      ? '    <tr><td style="background-color:' + P + '; height:3px; line-height:3px; font-size:3px;">&nbsp;</td></tr>\n' : '';
+
+    return '<!DOCTYPE html>\n<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">\n' +
+'<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+'<meta name="x-apple-disable-message-reformatting">\n<meta name="color-scheme" content="light">\n' +
+(parsed.subject ? '<!-- SUBJECT LINE: ' + parsed.subject + ' -->\n' : '') +
+'<title>' + esc(parsed.subject || S.name) + '</title>\n' +
+'<!--[if mso]>\n<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>\n<![endif]-->\n' +
+webfont +
+'<style>\n' +
+'  body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }\n' +
+'  table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }\n' +
+'  img { -ms-interpolation-mode:bicubic; border:0; height:auto; line-height:100%; outline:none; text-decoration:none; }\n' +
+'  body { margin:0 !important; padding:0 !important; width:100% !important; }\n' +
+'  a { color:' + P + '; }\n' +
+'  @media screen and (max-width:' + (W + 20) + 'px) {\n' +
+'    .wrap { width:100% !important; }\n' +
+'    .pad  { padding-left:20px !important; padding-right:20px !important; }\n' +
+'    .stack { display:block !important; width:100% !important; max-width:100% !important; }\n' +
+'    h1.title { font-size:' + Math.max(20, S.fsTitle - 4) + 'px !important; }\n' +
+'  }\n' +
+'</style>\n</head>\n\n' +
+'<body style="margin:0; padding:0; background-color:' + S.page + ';">\n\n' + pre +
+'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:' + S.page + ';">\n<tr>\n<td align="center" style="padding:32px 12px;">\n\n' +
+'  <table role="presentation" class="wrap" width="' + W + '" cellpadding="0" cellspacing="0" border="0" style="width:' + W + 'px; max-width:' + W + 'px; background-color:#FFFFFF; border:1px solid ' + S.line + '; border-radius:' + S.radius + 'px; overflow:hidden; box-shadow:0 8px 28px rgba(16,35,44,.06);">\n\n' +
+topBar + headerBlock(parsed, T) + placedLogoRow(T, 'above') + renderBlocks(parsed.blocks, T) + placedLogoRow(T, 'footer') + gap(10) + botBar +
+'  </table>\n\n' + footer +
+'</td>\n</tr>\n</table>\n\n</body>\n</html>';
+  }
+
+  /* ==================== plain text ==================== */
+  function buildText(parsed) {
+    var out = [];
+    if (parsed.subject) { out.push(parsed.subject, ''); }
+    parsed.blocks.forEach(function (b) {
+      if (b.type === 'eyebrow') { out.push(b.text.toUpperCase(), ''); }
+      else if (b.type === 'h1') { out.push(stripInline(b.text), '='.repeat(Math.min(60, b.text.length)), ''); }
+      else if (b.type === 'h2') { out.push('', stripInline(b.text).toUpperCase(), ''); }
+      else if (b.type === 'sub') { out.push(stripInline(b.text), ''); }
+      else if (b.type === 'p') { out.push(b.lines.map(stripInline).join('\n'), ''); }
+      else if (b.type === 'ul' || b.type === 'card') { b.items.forEach(function (x) { out.push('* ' + stripInline(x)); }); out.push(''); }
+      else if (b.type === 'ol') { b.items.forEach(function (x, n) { out.push((n + 1) + '. ' + stripInline(x)); }); out.push(''); }
+      else if (b.type === 'table') { b.rows.forEach(function (r) { out.push(stripInline(r.label) + ': ' + stripInline(r.value)); }); out.push(''); }
+      else if (b.type === 'stats') { b.items.forEach(function (s2) { out.push(s2.value + ' — ' + s2.label); }); out.push(''); }
+      else if (b.type === 'callout') { out.push(stripInline(b.text), ''); }
+      else if (b.type === 'button') { out.push(b.text + ': ' + b.url, ''); }
+      else if (b.type === 'image') { out.push('[' + (b.alt || 'image') + ']', ''); if (b.caption) { out.push(stripInline(b.caption), ''); } }
+      else if (b.type === 'gallery') { out.push('Gallery:', ''); b.items.forEach(function (item) { out.push('* [' + (item.alt || 'image') + ']' + (item.caption ? ' — ' + stripInline(item.caption) : '')); }); out.push(''); }
+      else if (b.type === 'quote') { out.push('\u201c' + stripInline(b.text) + '\u201d' + (b.name ? ' \u2014 ' + stripInline(b.name) : ''), ''); }
+      else if (b.type === 'feature') { out.push((b.heading || b.alt ? stripInline(b.heading || b.alt) + ': ' : '') + stripInline(b.body || ''), ''); }
+      else if (b.type === 'divider') { out.push('—'.repeat(40), ''); }
+      else if (b.type === 'sign') { out.push(b.parts.filter(Boolean).join('\n'), ''); }
+    });
+    if (S.footer) { out.push('', S.footer); }
+    return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  /* ==================== review checks ==================== */
+  var ICON_OK = '<svg class="ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.3 4.6-4.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_WARN = '<svg class="ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="8"/><path d="M10 6v5M10 14h.01" stroke-linecap="round"/></svg>';
+
+  function runChecks(parsed, html, text) {
+    var el = $('checks'), items = [];
+    var bytes = new Blob([html]).size;
+
+    if (!parsed.subject) {
+      items.push(['warn', 'No subject line', 'Add a line starting with "Subject:" so it travels with the template.']);
+    } else if (parsed.subject.length > 60) {
+      items.push(['warn', 'Subject is ' + parsed.subject.length + ' characters', 'Mobile inboxes cut off around 40–60. Consider trimming.']);
+    } else {
+      items.push(['ok', 'Subject looks good', parsed.subject.length + ' characters']);
+    }
+
+    if (S.preheader) { items.push(['ok', 'Preheader set', 'Shown next to the subject in the inbox list.']); }
+    else { items.push(['warn', 'No preheader', 'Without one, clients pull the first line of body text instead.']); }
+
+    if (bytes > 102000) {
+      items.push(['bad', 'Over Gmail\u2019s clipping limit', Math.round(bytes / 1024) + 'KB. Gmail truncates past 102KB — host the logo instead of embedding it.']);
+    } else if (bytes > 70000) {
+      items.push(['warn', 'Getting close to the size limit', Math.round(bytes / 1024) + 'KB of 102KB.']);
+    } else {
+      items.push(['ok', 'Size is comfortable', Math.round(bytes / 1024) + 'KB of Gmail\u2019s 102KB limit']);
+    }
+
+    var imgs = (html.match(/<img /g) || []).length;
+    var noAlt = (html.match(/<img (?![^>]*alt=)/g) || []).length;
+    if (imgs && noAlt) { items.push(['warn', noAlt + ' image(s) missing alt text', 'Alt text shows when images are blocked, which is the default in most clients.']); }
+    else if (imgs) { items.push(['ok', 'All images have alt text', imgs + ' image(s)']); }
+
+    if (S.logo && S.logo.indexOf('data:') === 0) {
+      items.push(['warn', 'Logo is embedded as a data URI', 'Fine for a Gmail paste. Most sending platforms strip these — host the file instead.']);
+    }
+
+    var words = text.split(/\s+/).filter(Boolean).length;
+    if (words < 40) { items.push(['warn', 'Very little text', words + ' words. Image-heavy, text-light mail is more likely to be filtered.']); }
+    else { items.push(['ok', 'Text volume is healthy', words + ' words']); }
+
+    if (!S.unsub && !S.footer) {
+      items.push(['warn', 'No footer or unsubscribe link', 'Required for anything sent to an external list. Fine for internal mail.']);
+    } else if (S.unsub) {
+      items.push(['ok', 'Unsubscribe link present', S.unsub]);
+    }
+
+    el.innerHTML = items.map(function (it) {
+      var icon = it[0] === 'ok' ? ICON_OK : ICON_WARN;
+      return '<div class="check ' + it[0] + '">' + icon + '<div><b>' + esc(it[1]) + '</b><span>' + esc(it[2]) + '</span></div></div>';
+    }).join('');
+
+    // link inventory
+    var links = [], re = /<a\s+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g, m;
+    while ((m = re.exec(html)) !== null) {
+      links.push({ url: m[1], label: m[2].replace(/<[^>]+>/g, '').trim() });
+    }
+    var lel = $('links');
+    if (!links.length) { lel.innerHTML = '<div class="empty">No links in this email yet.</div>'; return; }
+    lel.innerHTML = '<div class="linklist">' + links.map(function (l) {
+      var bad = /\{\{|\$\[|https:\/\/$|example\.com/.test(l.url);
+      return '<div><b>' + esc(l.label || '(link)') + '</b><code class="' + (bad ? 'flag' : '') + '">' + esc(l.url) + '</code></div>';
+    }).join('') + '</div>';
+  }
+
+  /* ==================== render loop ==================== */
+  var html = '', plain = '';
+
+  function render() {
+    var parsed = parse($('source').value);
+    html = buildEmail(parsed);
+    plain = buildText(parsed);
+
+    $('preview').srcdoc = html;
+    $('codeView').textContent = html;
+    $('textView').textContent = plain;
+
+    $('inboxSubject').textContent = parsed.subject || '(no subject)';
+    $('inboxPre').textContent = S.preheader || plain.split('\n').filter(Boolean)[1] || '';
+    $('inboxFrom').textContent = S.name || 'Sender';
+    $('inboxAv').textContent = (S.name || 'S').trim().charAt(0).toUpperCase();
+
+    var kb = Math.round(new Blob([html]).size / 1024);
+    $('sizeStat').innerHTML = '<b>' + kb + 'KB</b> ' + (kb > 102 ? '· over Gmail limit' : '');
+    var words = plain.split(/\s+/).filter(Boolean).length;
+    $('readStat').innerHTML = '<b>' + words + '</b> words · ~' + Math.max(1, Math.round(words / 220)) + ' min read';
+
+    runChecks(parsed, html, plain);
+    save();
+  }
+  var t = null;
+  function debounce() { clearTimeout(t); t = setTimeout(render, 160); }
+
+  /* ==================== UI wiring ==================== */
+  // rail
+  Array.prototype.forEach.call($('rail').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () {
+      Array.prototype.forEach.call($('rail').querySelectorAll('button'), function (x) { x.setAttribute('aria-selected', 'false'); });
+      b.setAttribute('aria-selected', 'true');
+      Array.prototype.forEach.call(document.querySelectorAll('.pane'), function (p) { p.classList.remove('active'); });
+      $('pane-' + b.dataset.pane).classList.add('active');
+    });
+  });
+
+  // theme thumbnails
+  function thumb(key) {
+    var T = THEMES[key], P = '#2C3A46', A = '#9DB6BE', bg = '#fff';
+    var svg = '<svg viewBox="0 0 100 56" preserveAspectRatio="none">';
+    svg += '<rect width="100" height="56" fill="' + bg + '" rx="3"/>';
+    if (T.headerBand) {
+      svg += '<rect width="100" height="20" fill="' + P + '" rx="3"/>';
+      svg += '<rect x="38" y="6" width="24" height="3" rx="1.5" fill="' + A + '"/>';
+      svg += '<rect x="26" y="12" width="48" height="4" rx="2" fill="#fff"/>';
+    } else if (T.header === 'minimal') {
+      svg += '<rect x="8" y="7" width="16" height="4" rx="2" fill="' + P + '"/>';
+      svg += '<rect x="8" y="17" width="52" height="4" rx="2" fill="' + P + '"/>';
+    } else if (T.header === 'left') {
+      svg += '<rect x="8" y="6" width="18" height="5" rx="2" fill="' + P + '"/>';
+      svg += '<rect x="8" y="16" width="60" height="5" rx="2.5" fill="' + P + '"/>';
+      svg += '<rect x="8" y="24" width="84" height="1.4" fill="' + A + '"/>';
+    } else {
+      svg += '<rect x="41" y="5" width="18" height="5" rx="2.5" fill="' + P + '"/>';
+      svg += '<rect x="24" y="15" width="52" height="5" rx="2.5" fill="' + P + '"/>';
+      svg += '<rect x="8" y="24" width="84" height="1.4" fill="' + A + '"/>';
+    }
+    if (T.label === 'bar') { svg += '<rect x="8" y="30" width="84" height="6" rx="2" fill="' + P + '"/>'; }
+    else if (T.label === 'rule') { svg += '<rect x="8" y="31" width="30" height="3" rx="1.5" fill="' + P + '"/><rect x="8" y="36" width="84" height="1.2" fill="' + A + '"/>'; }
+    else { svg += '<rect x="8" y="31" width="26" height="3" rx="1.5" fill="' + A + '"/>'; }
+    if (T.card === 'elevated' || T.card === 'tinted' || T.card === 'outlined') {
+      svg += '<rect x="8" y="41" width="84" height="11" rx="3" fill="' + (T.card === 'tinted' ? '#EDF3F3' : '#fff') + '" stroke="' + A + '" stroke-width="1"/>';
+      svg += '<rect x="13" y="45" width="46" height="3" rx="1.5" fill="' + A + '"/>';
+    } else {
+      svg += '<rect x="8" y="43" width="70" height="3" rx="1.5" fill="' + A + '"/>';
+      svg += '<rect x="8" y="49" width="54" height="3" rx="1.5" fill="' + A + '"/>';
+    }
+    return svg + '</svg>';
+  }
+
+  var tg = $('themeGrid');
+  Object.keys(THEMES).forEach(function (k) {
+    var T = THEMES[k];
+    var b = document.createElement('button');
+    b.className = 'theme';
+    b.setAttribute('aria-selected', String(k === S.theme));
+    b.dataset.key = k;
+    b.innerHTML = '<span class="thumb">' + thumb(k) + '</span><span class="meta"><b>' + T.name + '</b><i>' + T.desc + '</i></span>';
+    b.addEventListener('click', function () {
+      S.theme = k;
+      Array.prototype.forEach.call(tg.children, function (c) { c.setAttribute('aria-selected', String(c.dataset.key === k)); });
+      render();
+    });
+    tg.appendChild(b);
+  });
+
+  // palettes
+  var pg = $('palGrid');
+  Object.keys(PALETTES).forEach(function (k) {
+    var P = PALETTES[k];
+    var b = document.createElement('button');
+    b.className = 'pal';
+    b.dataset.key = k;
+    b.setAttribute('aria-selected', String(k === S.palette));
+    b.innerHTML = '<span class="chips"><i style="background:' + P.primary + '"></i><i style="background:' + P.accent + '"></i><i style="background:' + P.tint + '"></i><i style="background:' + P.page + '"></i></span><span>' + P.name + '</span>';
+    b.addEventListener('click', function () {
+      S.palette = k;
+      ['primary', 'accent', 'tint', 'line', 'ink', 'page'].forEach(function (key) { S[key] = P[key]; });
+      Array.prototype.forEach.call(pg.children, function (c) { c.setAttribute('aria-selected', String(c.dataset.key === k)); });
+      syncColorInputs();
+      render();
+    });
+    pg.appendChild(b);
+  });
+
+  function syncColorInputs() {
+    [['cPrimary', 'tPrimary', 'primary'], ['cAccent', 'tAccent', 'accent'], ['cTint', 'tTint', 'tint'],
+     ['cLine', 'tLine', 'line'], ['cInk', 'tInk', 'ink'], ['cPage', 'tPage', 'page']].forEach(function (r) {
+      $(r[0]).value = S[r[2]]; $(r[1]).value = S[r[2]];
+    });
+  }
+
+  function bindColor(cid, tid, key) {
+    $(cid).addEventListener('input', function () { S[key] = this.value; $(tid).value = this.value; debounce(); });
+    $(tid).addEventListener('input', function () {
+      var v = this.value.trim();
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) { S[key] = v; $(cid).value = v; debounce(); }
+    });
+  }
+  bindColor('cPrimary', 'tPrimary', 'primary');
+  bindColor('cAccent', 'tAccent', 'accent');
+  bindColor('cTint', 'tTint', 'tint');
+  bindColor('cLine', 'tLine', 'line');
+  bindColor('cInk', 'tInk', 'ink');
+  bindColor('cPage', 'tPage', 'page');
+  syncColorInputs();
+
+  function num(id, key, min, max, dflt) {
+    $(id).addEventListener('input', function () {
+      var v = parseInt(this.value.replace(/\D/g, ''), 10);
+      S[key] = isNaN(v) ? dflt : Math.min(max, Math.max(min, v));
+      debounce();
+    });
+  }
+  num('emailWidth', 'width', 320, 800, 600);
+  num('radius', 'radius', 0, 28, 10);
+  num('fsBody', 'fsBody', 12, 20, 15);
+  num('fsTitle', 'fsTitle', 18, 44, 26);
+  num('logoWidth', 'logoWidth', 40, 400, 120);
+
+  $('source').addEventListener('input', debounce);
+  $('brandName').addEventListener('input', function () { S.name = this.value; debounce(); });
+  $('preheader').addEventListener('input', function () { S.preheader = this.value; debounce(); });
+  $('footerText').addEventListener('input', function () { S.footer = this.value; debounce(); });
+  $('unsubUrl').addEventListener('input', function () { S.unsub = this.value.trim(); debounce(); });
+  $('btnShape').addEventListener('change', function () { S.btnRadius = parseInt(this.value, 10); render(); });
+  $('bars').addEventListener('change', function () { S.bars = this.value; render(); });
+  $('headFont').addEventListener('change', function () {
+    var p = this.value.split('|'); S.headFont = p[0]; S.headWeb = p[1] || ''; render();
+  });
+  $('bodyFont').addEventListener('change', function () {
+    var p = this.value.split('|'); S.bodyFont = p[0]; S.bodyWeb = p[1] || ''; render();
+  });
+
+  // insert chips
+  Array.prototype.forEach.call($('chips').querySelectorAll('.chip'), function (c) {
+    c.addEventListener('click', function () {
+      var ta = $('source'), pos = ta.selectionStart, v = ta.value;
+      var before = v.slice(0, pos), after = v.slice(pos);
+      var lead = (before && !/\n$/.test(before)) ? '\n' : '';
+      ta.value = before + lead + c.dataset.ins + after;
+      ta.focus();
+      ta.selectionStart = ta.selectionEnd = (before + lead + c.dataset.ins).length;
+      render();
+    });
+  });
+
+  $('starter').addEventListener('change', function () {
+    if (STARTERS[this.value]) { $('source').value = STARTERS[this.value]; render(); }
+    this.selectedIndex = 0;
+  });
+  $('btnClear').addEventListener('click', function () { $('source').value = ''; render(); });
+  $('btnUpload').addEventListener('click', function () { $('fileInput').click(); });
+  $('fileInput').addEventListener('change', function () {
+    var f = this.files[0]; if (!f) { return; }
+    var fr = new FileReader();
+    fr.onload = function () { $('source').value = fr.result; render(); };
+    fr.readAsText(f);
+  });
+  $('source').addEventListener('dragover', function (e) { e.preventDefault(); });
+  $('source').addEventListener('drop', function (e) {
+    var f = e.dataTransfer.files[0];
+    if (f && /text|\.txt$/i.test(f.type + f.name)) {
+      e.preventDefault();
+      var fr = new FileReader();
+      fr.onload = function () { $('source').value = fr.result; render(); };
+      fr.readAsText(f);
+    }
+  });
+
+  // logo
+  function setLogo(d) {
+    S.logo = d || '';
+    $('logoEmpty').classList.toggle('hidden', !!d);
+    $('logoHas').classList.toggle('hidden', !d);
+    if (d) { $('logoImg').src = d; }
+    debounce();
+  }
+  function readImg(f) {
+    if (!f || !/^image\//.test(f.type)) { return; }
+    var fr = new FileReader();
+    fr.onload = function () { setLogo(fr.result); };
+    fr.readAsDataURL(f);
+  }
+  $('logoDrop').addEventListener('click', function () { $('logoInput').click(); });
+  $('logoInput').addEventListener('change', function () { readImg(this.files[0]); });
+  $('logoDrop').addEventListener('dragover', function (e) { e.preventDefault(); });
+  $('logoDrop').addEventListener('drop', function (e) { e.preventDefault(); readImg(e.dataTransfer.files[0]); });
+  $('btnLogoClear').addEventListener('click', function (e) { e.preventDefault(); setLogo(''); });
+
+  // canvas tabs
+  function view(which) {
+    $('vPreview').setAttribute('aria-selected', String(which === 'p'));
+    $('vCode').setAttribute('aria-selected', String(which === 'c'));
+    $('vText').setAttribute('aria-selected', String(which === 't'));
+    $('frame').classList.toggle('hidden', which !== 'p');
+    $('inboxCard').classList.toggle('hidden', which !== 'p');
+    $('codeView').classList.toggle('hidden', which !== 'c');
+    $('textView').classList.toggle('hidden', which !== 't');
+  }
+  $('vPreview').addEventListener('click', function () { view('p'); });
+  $('vCode').addEventListener('click', function () { view('c'); });
+  $('vText').addEventListener('click', function () { view('t'); });
+  $('dDesk').addEventListener('click', function () {
+    $('dDesk').setAttribute('aria-selected', 'true'); $('dMob').setAttribute('aria-selected', 'false');
+    $('frame').classList.remove('mobile');
+  });
+  $('dMob').addEventListener('click', function () {
+    $('dMob').setAttribute('aria-selected', 'true'); $('dDesk').setAttribute('aria-selected', 'false');
+    $('frame').classList.add('mobile');
+  });
+
+  // ui theme
+  $('btnUiTheme').addEventListener('click', function () {
+    var d = document.documentElement.getAttribute('data-ui') === 'dark';
+    document.documentElement.setAttribute('data-ui', d ? 'light' : 'dark');
+  });
+
+  /* ==================== export ==================== */
+  var toastTimer = null;
+  function toast(msg) {
+    var el = $('toast'); el.textContent = msg; el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2400);
+  }
+  function copyText(str, msg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(str).then(function () { toast(msg); }, function () { fallback(str, msg); });
+    } else { fallback(str, msg); }
+  }
+  function fallback(str, msg) {
+    var ta = document.createElement('textarea');
+    ta.value = str; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast(msg); } catch (e) { toast('Copy blocked by the browser'); }
+    document.body.removeChild(ta);
+  }
+  function copyRich() {
+    var holder = document.createElement('div');
+    holder.setAttribute('style', 'position:fixed; left:-99999px; top:0; width:' + S.width + 'px;');
+    holder.innerHTML = html.replace(/[\s\S]*?<body[^>]*>/i, '').replace(/<\/body>[\s\S]*/i, '');
+    document.body.appendChild(holder);
+    var r = document.createRange(); r.selectNodeContents(holder);
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    sel.removeAllRanges(); document.body.removeChild(holder);
+    toast(ok ? 'Copied — paste into a Gmail compose window' : 'Copy blocked. Use Copy HTML source instead.');
+  }
+  function download(content, mime, ext) {
+    var blob = new Blob([content], { type: mime });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = ($('docName').value || 'email').replace(/[^\w-]+/g, '-').toLowerCase() + ext;
+    a.click(); URL.revokeObjectURL(a.href);
+    toast('Downloaded');
+  }
+
+  $('btnExport').addEventListener('click', function (e) {
+    e.stopPropagation();
+    $('exportMenu').classList.toggle('open');
+  });
+  document.addEventListener('click', function () { $('exportMenu').classList.remove('open'); });
+  $('exportMenu').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) { return; }
+    var a = b.dataset.act;
+    if (a === 'gmail') { copyRich(); }
+    if (a === 'html') { copyText(html, 'HTML source copied'); }
+    if (a === 'text') { copyText(plain, 'Plain-text version copied'); }
+    if (a === 'download') { download(html, 'text/html', '.html'); }
+    if (a === 'downloadTxt') { download($('source').value, 'text/plain', '.txt'); }
+    $('exportMenu').classList.remove('open');
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); copyRich(); }
+  });
+
+  /* ==================== persistence ==================== */
+  function save() {
+    if (!window.storage) { return; }
+    try {
+      var kit = {};
+      ['theme', 'palette', 'name', 'logo', 'logoWidth', 'primary', 'accent', 'tint', 'line',
+       'ink', 'page', 'headFont', 'headWeb', 'bodyFont', 'bodyWeb', 'fsBody', 'fsTitle',
+       'width', 'radius', 'btnRadius', 'bars', 'footer', 'unsub'].forEach(function (k) { kit[k] = S[k]; });
+      window.storage.set('dispatch_kit', JSON.stringify(kit)).catch(function () {});
+    } catch (e) { /* storage is optional */ }
+  }
+
+  function applyKit() {
+    $('brandName').value = S.name;
+    $('logoWidth').value = S.logoWidth;
+    $('emailWidth').value = S.width;
+    $('radius').value = S.radius;
+    $('fsBody').value = S.fsBody;
+    $('fsTitle').value = S.fsTitle;
+    $('footerText').value = S.footer;
+    $('unsubUrl').value = S.unsub;
+    $('bars').value = S.bars;
+    $('btnShape').value = String(S.btnRadius);
+    syncColorInputs();
+    if (S.logo) { setLogo(S.logo); }
+    Array.prototype.forEach.call(tg.children, function (c) { c.setAttribute('aria-selected', String(c.dataset.key === S.theme)); });
+    Array.prototype.forEach.call(pg.children, function (c) { c.setAttribute('aria-selected', String(c.dataset.key === S.palette)); });
+    [['headFont', 'headFont', 'headWeb'], ['bodyFont', 'bodyFont', 'bodyWeb']].forEach(function (r) {
+      var sel = $(r[0]);
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value.split('|')[0] === S[r[1]]) { sel.selectedIndex = i; break; }
+      }
+    });
+  }
+
+  function boot() {
+    $('source').value = STARTERS.thanks;
+    if (window.storage) {
+      window.storage.get('dispatch_kit').then(function (res) {
+        if (res && res.value) {
+          try {
+            var k = JSON.parse(res.value);
+            Object.keys(k).forEach(function (key) { if (key in S) { S[key] = k[key]; } });
+            applyKit();
+          } catch (e) { /* ignore a malformed kit */ }
+        }
+        render();
+      }).catch(function () { render(); });
+    } else { render(); }
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

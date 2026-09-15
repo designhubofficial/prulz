@@ -1,0 +1,28 @@
+What we shipped in March
+
+MONTHLY ROUNDUP
+
+Three things worth your time
+============================
+
+Hi there,
+
+A short read on what changed this month and what it means for your team.
+
+BY THE NUMBERS
+
+42% — Faster onboarding
+1,280 — New teams
+99.9% — Uptime
+
+HIGHLIGHTS
+
+* Faster search across every workspace, now under 200ms.
+* Shared templates so your team stops rebuilding the same doc.
+* Audit logs available on every plan, not just Enterprise.
+
+Read the full changelog: https://example.com/changelog
+
+————————————————————————————————————————
+
+As always, reply to this email if something is not working. A person reads it.

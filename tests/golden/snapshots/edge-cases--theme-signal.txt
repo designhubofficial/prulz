@@ -1,0 +1,12 @@
+Escaping & <edge> cases
+
+Ampersands & angle <brackets>
+=============================
+
+Text with & ampersand, <tag> and "quotes".
+
+* Item with a trailing pipe |
+
+Key with: pipe | Value with | pipes
+
+Solo signature line

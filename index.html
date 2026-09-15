@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prulene's Dashboard</title>
+  <meta name="description" content="A local-first provider workspace for email, signatures, transcription, and PDF editing. Runs entirely in your browser.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<a class="skip-link" href="#hub">Skip to workspace</a>
+<aside id="appRail" class="app-rail" aria-label="Workspace navigation"></aside>
+<header id="workspaceBar" class="workspace-bar"></header>
+<div id="chatWidget" class="chat-widget"></div>
+<main id="hub" class="hub" tabindex="-1"><p class="loading-workspace">Opening your workspace…</p></main>
+
+<header class="app-header">
+  <div class="wordmark">
+    <span class="mark">P</span>
+    <span class="name">Prulene's Dashboard</span>
+  </div>
+
+  <nav class="segmented" id="toolSwitch" aria-label="Tool">
+    <button type="button" data-tool="pdf" aria-selected="false">PDF editor</button>
+    <button type="button" data-tool="templates" aria-selected="true">Templates</button>
+    <button type="button" data-tool="signature" aria-selected="false">Signature</button>
+    <button type="button" data-tool="transcribe" aria-selected="false">Transcribe</button>
+  </nav>
+
+  <span class="spacer"></span>
+
+  <p class="privacy-note" id="storageState" title="Nothing you type is transmitted anywhere.">
+    Runs entirely in your browser
+  </p>
+  <button type="button" class="btn sm" id="openSettings">Practice details</button>
+</header>
+
+<!-- ===================================================== templates ==== -->
+<main class="workspace" id="templatesTool" hidden tabindex="-1">
+  <section class="side" aria-label="Fill in this template">
+    <div class="side-head">
+      <div class="editor-kicker">
+        <span class="editor-kicker-dot" aria-hidden="true"></span>
+        <span id="templateAudience">Provider-to-provider</span>
+        <span class="editor-kicker-divider" aria-hidden="true"></span>
+        <span id="templateType">1:1 email</span>
+      </div>
+      <div class="row">
+        <div>
+          <h1 id="templateName">Appointment confirmation</h1>
+          <p id="templateDesc">Sent immediately after booking.</p>
+        </div>
+        <button type="button" class="btn sm" id="browseTemplates">Change</button>
+      </div>
+      <nav class="segmented sidetabs" id="sideTabs" aria-label="Editor section">
+        <button type="button" data-pane="content" aria-selected="true">Content</button>
+        <button type="button" data-pane="design" aria-selected="false">Design</button>
+      </nav>
+      <div class="side-meta">
+        <span class="state" id="draftState"></span>
+        <button type="button" class="linkbtn" id="resetFields">Reset to samples</button>
+      </div>
+    </div>
+    <section class="shared-identity" aria-labelledby="sharedIdentityTitle">
+      <div class="shared-identity-head">
+        <div>
+          <span class="panel-kicker">Brand identity</span>
+          <h2 id="sharedIdentityTitle">Your mark, everywhere</h2>
+        </div>
+        <span class="state" id="identityState">Saved</span>
+      </div>
+      <p class="shared-identity-copy">Upload one transparent PNG, then choose where it appears in each email.</p>
+      <div class="identity-preview" aria-live="polite">
+        <span class="identity-logo" id="identityLogo" aria-hidden="true"></span>
+        <span class="identity-preview-copy">
+          <strong id="identityName">Your practice</strong>
+          <small id="identitySummary">Built-in practice mark</small>
+        </span>
+      </div>
+      <div class="identity-upload-row">
+        <button type="button" class="btn sm" id="uploadEmailLogo">Upload PNG</button>
+        <input type="file" id="emailLogoFile" accept="image/png" hidden>
+        <button type="button" class="linkbtn" id="removeEmailLogo" disabled>Remove custom logo</button>
+      </div>
+      <p class="identity-logo-meta" id="emailLogoMeta">PNG only · resized and saved on this device.</p>
+      <label class="identity-placement" for="emailLogoPlacement">
+        <span>Logo placement</span>
+        <select id="emailLogoPlacement" aria-label="Logo placement">
+          <option value="header">Header / banner</option>
+          <option value="above">Above message content</option>
+          <option value="footer">Footer of the email</option>
+          <option value="hidden">Do not show</option>
+        </select>
+      </label>
+      <div class="shared-identity-foot">
+        <span>Applies to every template</span>
+        <span>Saved on this device</span>
+      </div>
+    </section>
+    <form class="side-body scroll" id="fillForm" autocomplete="off"></form>
+    <div class="side-body scroll" id="designPane" hidden></div>
+    <datalist id="recentOptions"></datalist>
+  </section>
+
+  <section class="stage-wrap" aria-label="Preview">
+    <div class="stage-bar">
+      <div class="subject-line">
+        <span class="preview-label">Live preview</span>
+        <span class="subject-separator" aria-hidden="true">/</span>
+        <span class="eyebrow">Subject</span>
+        <strong id="subjectLine">—</strong>
+      </div>
+      <div class="segmented" id="viewSwitch" role="group" aria-label="Preview mode">
+        <button type="button" data-view="desktop" aria-selected="true">Desktop</button>
+        <button type="button" data-view="mobile" aria-selected="false">Mobile</button>
+        <button type="button" data-view="text" aria-selected="false">Text</button>
+      </div>
+      <button type="button" class="btn sm" id="openReview">
+        Review <span class="pill pass" id="reviewPill">✓</span>
+      </button>
+    </div>
+
+    <div class="stage">
+      <iframe id="preview" title="Email preview" sandbox=""></iframe>
+      <pre id="previewText" hidden></pre>
+    </div>
+
+    <div class="actionbar">
+      <div class="status ok" id="status"><span class="dot"></span><span>Ready to send</span></div>
+      <div class="actions">
+        <button type="button" class="btn" id="copyText">Plain text</button>
+        <button type="button" class="btn" id="copyHtml">HTML</button>
+        <button type="button" class="btn primary" id="copyGmail">Copy for Gmail</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===================================================== signature ==== -->
+<main class="workspace" id="signatureTool" hidden>
+  <section class="side" aria-label="Signature details">
+    <div class="side-head">
+      <div class="row">
+        <div>
+          <h1>Email signature</h1>
+          <p>Your details, on brand, ready to paste into Gmail settings.</p>
+        </div>
+      </div>
+      <div class="side-meta">
+        <span class="state" id="sigState"></span>
+        <button type="button" class="linkbtn" id="sigReset">Reset</button>
+      </div>
+    </div>
+    <form class="side-body scroll" id="sigForm" autocomplete="off"></form>
+  </section>
+
+  <section class="stage-wrap" aria-label="Signature preview">
+    <div class="stage-bar">
+      <div class="subject-line">
+        <span class="eyebrow">Preview</span>
+        <strong id="sigSize">—</strong>
+      </div>
+      <div class="segmented" id="sigViewSwitch" role="group" aria-label="Preview mode">
+        <button type="button" data-view="light" aria-selected="true">Light</button>
+        <button type="button" data-view="dark" aria-selected="false">Dark</button>
+        <button type="button" data-view="noimg" aria-selected="false">No images</button>
+        <button type="button" data-view="text" aria-selected="false">Text</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <iframe id="sigPreview" title="Signature preview" sandbox=""></iframe>
+      <pre id="sigPreviewText" hidden></pre>
+    </div>
+
+    <div class="actionbar">
+      <div class="status ok" id="sigStatus"><span class="dot"></span><span>Ready to copy</span></div>
+      <div class="actions">
+        <button type="button" class="btn" id="sigCopyHtml">HTML</button>
+        <button type="button" class="btn primary" id="sigCopy">Copy signature</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ====================================================== transcribe ==== -->
+<main class="workspace" id="transcribeTool" hidden>
+  <section class="side" aria-label="Recording">
+    <div class="side-head">
+      <div class="row">
+        <div>
+          <h1>Transcribe a call</h1>
+          <p>Runs on your machine. The audio is never uploaded.</p>
+        </div>
+      </div>
+      <div class="side-meta">
+        <span class="state" id="engineState"></span>
+      </div>
+    </div>
+
+    <div class="side-body scroll">
+      <div class="dropzone" id="dropzone" tabindex="0" role="button"
+           aria-label="Choose an audio file, or drop one here">
+        <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5"/>
+          <path d="m12 3 4.5 4.5M12 3v13.5"/>
+        </svg>
+        <strong id="dropTitle">Drop a recording here</strong>
+        <span class="muted" id="dropHint">or click to choose a file</span>
+        <input type="file" id="audioFile" accept="" hidden>
+      </div>
+
+      <div class="tpanel">
+        <div class="field">
+          <label for="tierSelect">Model</label>
+          <select id="tierSelect"></select>
+          <p class="help" id="tierNote"></p>
+        </div>
+
+        <div class="field">
+          <label for="langSelect">Spoken language</label>
+          <select id="langSelect"></select>
+          <p class="help">Detection reads the opening seconds only. Set it explicitly if the call
+            starts in one language and continues in another.</p>
+        </div>
+
+        <div class="run-row">
+          <button type="button" class="btn primary" id="runTranscribe" disabled>Transcribe</button>
+          <button type="button" class="btn" id="stopTranscribe" hidden>Stop</button>
+        </div>
+
+        <div class="progress-block" id="progressBlock" hidden>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <p class="progress-label" id="progressLabel"></p>
+        </div>
+
+        <p class="notice" id="transcribeError" hidden></p>
+      </div>
+
+      <div class="saved-list" id="savedList"></div>
+    </div>
+  </section>
+
+  <section class="stage-wrap transcribe-shell" aria-label="Transcript">
+    <div class="stage-bar">
+      <div class="subject-line">
+        <span class="eyebrow">Transcript</span>
+        <strong id="transcriptName">—</strong>
+      </div>
+      <div class="segmented" id="transcriptViewSwitch" role="group" aria-label="View">
+        <button type="button" data-tview="transcript" aria-selected="true">Transcript</button>
+        <button type="button" data-tview="notes" aria-selected="false">Call notes</button>
+        <button type="button" data-tview="text" aria-selected="false">Text</button>
+      </div>
+      <div class="search-wrap tight" id="transcriptSearchWrap">
+        <label class="visually-hidden" for="transcriptSearch">Search this transcript</label>
+        <input id="transcriptSearch" type="search" placeholder="Search…" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="stage transcript-stage">
+      <div class="transcript scroll" id="transcriptBody"></div>
+      <div class="notes-pane scroll" id="notesBody" hidden></div>
+      <div class="text-pane" id="textPane" hidden>
+        <div class="text-meta">
+          <span class="muted" id="textMeta">Text appears here once a call is transcribed.</span>
+          <button type="button" class="linkbtn" id="textSelectAll" disabled>Select all</button>
+        </div>
+        <textarea id="transcriptText" readonly spellcheck="false"
+                  aria-label="Transcript as exported text, read-only"></textarea>
+      </div>
+    </div>
+
+    <div class="actionbar transcript-actionbar">
+      <div class="status ok" id="transcriptStatus"><span class="dot"></span><span>No transcript yet</span></div>
+      <div class="audio-player" id="audioPlayer" hidden aria-label="Recording playback">
+        <button type="button" class="player-control player-play" id="playerPlay"
+                aria-label="Play recording" title="Play recording" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+        </button>
+        <button type="button" class="player-skip" id="playerSkipBack"
+                aria-label="Skip back 10 seconds" title="Skip back 10 seconds" disabled>−10</button>
+        <div class="player-main">
+          <div class="player-timeline">
+            <span id="playerCurrentTime">0:00</span>
+            <input id="playerSeek" type="range" min="0" max="0" step="0.1" value="0"
+                   aria-label="Seek through recording" disabled>
+            <span id="playerDuration">0:00</span>
+          </div>
+          <div class="player-details">
+            <span id="playerState" aria-live="polite">Ready to replay recording</span>
+            <select id="playerSpeed" class="player-speed" aria-label="Playback speed">
+              <option value="1">1×</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+          </div>
+        </div>
+        <div class="player-actions" aria-label="Playback controls">
+          <button type="button" class="player-skip" id="playerSkipForward"
+                  aria-label="Skip forward 30 seconds" title="Skip forward 30 seconds" disabled>+30</button>
+          <button type="button" class="player-control player-mute" id="playerMute"
+                  aria-label="Mute recording" title="Mute recording" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"></path><path d="M16 9.5a4 4 0 0 1 0 5"></path><path d="M18.5 7a7.5 7.5 0 0 1 0 10"></path></svg>
+          </button>
+          <input id="playerVolume" class="player-volume" type="range" min="0" max="1" step="0.05" value="1"
+                 aria-label="Recording volume" disabled>
+        </div>
+        <audio id="player" preload="metadata" aria-hidden="true"></audio>
+      </div>
+      <div class="actions export-actions">
+        <select id="formatSelect" class="format-select" aria-label="Export format"></select>
+        <button type="button" class="btn" id="copyTranscript" disabled>Copy</button>
+        <button type="button" class="btn primary" id="downloadTranscript" disabled>Download</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- =========================================================== pdf ==== -->
+<main class="pdf-workspace" id="pdfTool" hidden tabindex="-1">
+  <section class="pdf-empty" id="pdfEmpty" aria-labelledby="pdfEmptyTitle">
+    <div class="pdf-empty-main">
+      <div class="pdf-kicker"><span class="pdf-kicker-dot"></span> LOCAL PDF WORKSPACE <span class="pdf-kicker-rule"></span> PRIVATE BY DEFAULT</div>
+      <h1 id="pdfEmptyTitle">Make every PDF<br><em>ready to move.</em></h1>
+      <p class="pdf-empty-lede">Edit, sign, annotate, and organize documents without sending them to a server. Drop a file and keep the work in one calm, focused workspace.</p>
+
+      <div class="pdf-dropzone" id="pdfDropzone" tabindex="0" role="button" aria-label="Choose a PDF or image file, or drop one here">
+        <input type="file" id="pdfFileInput" accept="application/pdf,.pdf,image/png,image/jpeg,image/webp" multiple hidden>
+        <span class="pdf-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M12 17V10m0 0-3 3m3-3 3 3"/></svg></span>
+        <div class="pdf-drop-copy"><strong>Drop a PDF to start editing</strong><span>or click to browse · images can become a new PDF</span></div>
+        <span class="pdf-drop-cta">Choose file <span>↗</span></span>
+      </div>
+
+      <div class="pdf-empty-features" aria-label="PDF editor highlights">
+        <div><span class="pdf-feature-mark">✦</span><strong>Edit &amp; annotate</strong><p>Text, highlights, drawings, shapes, and images.</p></div>
+        <div><span class="pdf-feature-mark">↕</span><strong>Organize pages</strong><p>Reorder, rotate, duplicate, delete, or split.</p></div>
+        <div><span class="pdf-feature-mark">⌁</span><strong>Sign in seconds</strong><p>Draw a reusable signature right in the browser.</p></div>
+      </div>
+    </div>
+    <aside class="pdf-empty-aside" aria-label="PDF editor shortcuts">
+      <div class="pdf-aside-top"><span class="pdf-aside-label">QUICK START</span><span class="pdf-aside-badge">11 tools</span></div>
+      <h2>One document.<br>Every common move.</h2>
+      <p>Start with the job in front of you. The editor keeps pages, tools, and export together so you don’t have to hunt.</p>
+      <div class="pdf-shortcut-list">
+        <button type="button" data-pdf-empty-action="merge"><span class="pdf-shortcut-icon">＋</span><span><strong>Merge files</strong><small>Combine PDFs into one</small></span><span>→</span></button>
+        <button type="button" data-pdf-empty-action="images"><span class="pdf-shortcut-icon">▧</span><span><strong>Images to PDF</strong><small>Turn scans into pages</small></span><span>→</span></button>
+        <button type="button" data-pdf-empty-action="annotate"><span class="pdf-shortcut-icon">✎</span><span><strong>Mark up a page</strong><small>Highlight, draw, or sign</small></span><span>→</span></button>
+      </div>
+      <div class="pdf-privacy-note"><span>●</span><span><strong>Nothing leaves this device.</strong><br>Files are opened and saved locally.</span></div>
+    </aside>
+  </section>
+
+  <section class="pdf-editor-shell" id="pdfEditorShell" hidden aria-label="PDF editor">
+    <header class="pdf-toolbar">
+      <div class="pdf-file-summary">
+        <button type="button" class="pdf-icon-btn" id="pdfNewFile" aria-label="Open another PDF" title="Open another PDF">←</button>
+        <span class="pdf-file-icon" aria-hidden="true">PDF</span>
+        <div class="pdf-file-copy"><strong id="pdfFileName">Untitled.pdf</strong><span id="pdfFileMeta">Ready to edit</span></div>
+        <span class="pdf-dirty" id="pdfDirty" aria-live="polite">Saved</span>
+      </div>
+      <div class="pdf-toolbar-center">
+        <button type="button" class="pdf-icon-btn" id="pdfUndo" aria-label="Undo" title="Undo" disabled>↶</button>
+        <button type="button" class="pdf-icon-btn" id="pdfRedo" aria-label="Redo" title="Redo" disabled>↷</button>
+        <span class="pdf-toolbar-divider"></span>
+        <label class="pdf-page-jump"><span class="visually-hidden">Current page</span><input type="number" id="pdfPageInput" min="1" value="1" aria-label="Current page"><span>/ <b id="pdfPageCount">0</b></span></label>
+        <span class="pdf-toolbar-divider"></span>
+        <button type="button" class="pdf-icon-btn" id="pdfZoomOut" aria-label="Zoom out" title="Zoom out">−</button>
+        <span class="pdf-zoom-label" id="pdfZoomLabel">Fit</span>
+        <button type="button" class="pdf-icon-btn" id="pdfZoomIn" aria-label="Zoom in" title="Zoom in">＋</button>
+        <button type="button" class="pdf-icon-btn" id="pdfFit" aria-label="Fit page to window" title="Fit page to window">⌗</button>
+      </div>
+      <div class="pdf-toolbar-actions">
+        <span class="pdf-local-pill"><i></i> On this device</span>
+        <button type="button" class="btn primary pdf-export-btn" id="pdfExport"><span aria-hidden="true">↓</span> Export PDF</button>
+      </div>
+    </header>
+
+    <div class="pdf-editor-body">
+      <aside class="pdf-page-rail" aria-label="Document pages">
+        <div class="pdf-rail-header"><div><span class="pdf-panel-kicker">DOCUMENT</span><strong>Pages</strong></div><span class="pdf-page-count-pill" id="pdfRailCount">0</span></div>
+        <div class="pdf-rail-actions"><button type="button" data-pdf-action="add-blank">＋ Blank page</button><button type="button" data-pdf-action="insert-image">＋ Image page</button></div>
+        <div class="pdf-pages-list" id="pdfPagesList"></div>
+        <div class="pdf-rail-footer"><button type="button" data-pdf-action="export-selected">Export selected</button><span id="pdfSelectionMeta">1 page selected</span></div>
+      </aside>
+
+      <section class="pdf-canvas-panel" aria-label="PDF page">
+        <div class="pdf-canvas-topline"><div><span class="pdf-panel-kicker">EDITING PAGE</span><strong id="pdfCanvasTitle">Page 1</strong></div><span class="pdf-canvas-hint" id="pdfCanvasHint">Select an object or choose a tool to start</span></div>
+        <div class="pdf-canvas-scroll" id="pdfCanvasScroll">
+          <div class="pdf-page-wrap" id="pdfPageWrap">
+            <canvas id="pdfBaseCanvas" class="pdf-base-canvas"></canvas>
+            <canvas id="pdfOverlayCanvas" class="pdf-overlay-canvas" aria-label="PDF editing canvas"></canvas>
+          </div>
+          <div class="pdf-render-loading" id="pdfRenderLoading" hidden><span class="pdf-spinner"></span> Rendering page…</div>
+        </div>
+        <div class="pdf-canvas-footer"><span><kbd>Ctrl</kbd> <span>+</span> <kbd>Z</kbd> to undo</span><span>Click and drag on the page to place tools</span></div>
+      </section>
+
+      <aside class="pdf-inspector" aria-label="PDF tools">
+        <div class="pdf-inspector-head"><div><span class="pdf-panel-kicker">TOOLS</span><h2>Make a move</h2></div><span class="pdf-tool-count">LOCAL</span></div>
+        <div class="pdf-tool-grid" role="toolbar" aria-label="PDF editing tools">
+          <button type="button" class="pdf-tool-button active" data-pdf-tool="select" aria-pressed="true"><span>↖</span><strong>Select</strong><small>Move items</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="text" aria-pressed="false"><span>T</span><strong>Add text</strong><small>Type anywhere</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="highlight" aria-pressed="false"><span>▰</span><strong>Highlight</strong><small>Mark a passage</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="draw" aria-pressed="false"><span>⌁</span><strong>Draw</strong><small>Freehand pen</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="shape" aria-pressed="false"><span>□</span><strong>Shape</strong><small>Frame an area</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="sign" aria-pressed="false"><span>✎</span><strong>Sign</strong><small>Drop a signature</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="image" aria-pressed="false"><span>▧</span><strong>Image</strong><small>Add a visual</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="organize" aria-pressed="false"><span>☷</span><strong>Organize</strong><small>Manage pages</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="merge" aria-pressed="false"><span>＋</span><strong>Merge</strong><small>Bring files together</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="split" aria-pressed="false"><span>⌇</span><strong>Split</strong><small>Export a selection</small></button>
+          <button type="button" class="pdf-tool-button" data-pdf-tool="compress" aria-pressed="false"><span>↘</span><strong>Compress</strong><small>Make it lighter</small></button>
+        </div>
+        <div class="pdf-inspector-body" id="pdfInspectorBody"></div>
+      </aside>
+    </div>
+  </section>
+
+  <input type="file" id="pdfMergeInput" accept="application/pdf,.pdf" multiple hidden>
+  <input type="file" id="pdfImageInput" accept="image/png,image/jpeg,image/webp" hidden>
+  <input type="file" id="pdfImagePageInput" accept="image/png,image/jpeg,image/webp" multiple hidden>
+  <input type="file" id="pdfSignatureUploadInput" accept="image/png,.png" hidden>
+
+  <dialog class="pdf-signature-dialog" id="pdfSignatureDialog" aria-labelledby="pdfSignatureTitle">
+    <div class="pdf-dialog-head"><div><span class="pdf-panel-kicker">SIGNATURE STUDIO</span><h2 id="pdfSignatureTitle">Draw your signature</h2><p>It stays in this browser until you clear saved data.</p></div><button type="button" class="pdf-icon-btn" id="pdfSignatureClose" aria-label="Close signature dialog">×</button></div>
+    <div class="pdf-signature-pad-wrap"><canvas id="pdfSignaturePad" width="720" height="220" aria-label="Signature drawing pad"></canvas><span>Sign above the line</span></div>
+    <div class="pdf-signature-form"><label for="pdfSignatureName">Name this signature</label><input id="pdfSignatureName" value="My signature" maxlength="40"><button type="button" class="btn quiet" id="pdfSignatureClear">Clear</button><button type="button" class="btn primary" id="pdfSignatureSave">Use signature</button></div>
+  </dialog>
+</main>
+
+<!-- ======================================================= gallery ==== -->
+<div class="gallery" id="gallery" hidden>
+  <div class="gallery-head">
+    <div class="top">
+      <div>
+        <h1>Choose a template</h1>
+        <p class="muted" style="margin:2px 0 0; font-size:12.5px;">
+          <span id="galleryCount"></span> templates, grouped by who the message is for.
+        </p>
+      </div>
+      <div class="search-wrap">
+        <label class="visually-hidden" for="search">Search templates</label>
+        <input id="search" type="search" placeholder="Search templates…" autocomplete="off">
+      </div>
+      <button type="button" class="btn quiet" id="closeGallery" aria-label="Close">Close</button>
+    </div>
+  </div>
+  <div class="gallery-body">
+    <nav class="gallery-nav scroll" id="galleryNav" aria-label="Categories"></nav>
+    <div class="gallery-grid scroll" id="galleryGrid"></div>
+  </div>
+</div>
+
+<!-- ======================================================== review ==== -->
+<div class="scrim" id="scrim"></div>
+<aside class="review-drawer" id="reviewDrawer" aria-label="Pre-send review" aria-hidden="true">
+  <div class="review-head">
+    <div>
+      <h2>Pre-send review</h2>
+      <p class="muted" style="margin:1px 0 0; font-size:12px;" id="reviewSummary">Nothing flagged</p>
+    </div>
+    <button type="button" class="btn quiet sm" id="closeReview">Close</button>
+  </div>
+  <div class="review-body scroll" id="reviewBody"></div>
+</aside>
+
+<!-- ====================================================== settings ==== -->
+<dialog id="settings" class="sheet">
+  <form method="dialog" class="sheet-inner">
+    <div class="sheet-head">
+      <div>
+        <h2>Practice details</h2>
+        <p class="muted" style="margin:3px 0 0; font-size:12.5px;">
+          Filled into every template and signature automatically. Saved in this browser only.
+        </p>
+      </div>
+      <button type="submit" class="close" aria-label="Close">✕</button>
+    </div>
+    <div class="sheet-fields" id="brandFields"></div>
+    <div class="sheet-status" id="brandStatus" role="status" aria-live="polite"></div>
+    <div class="sheet-actions">
+      <button type="button" class="btn danger sm" id="resetBrand">Reset</button>
+      <button type="button" class="btn danger sm" id="clearData">Clear saved data</button>
+      <span class="spacer"></span>
+      <button type="submit" class="btn primary">Done</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

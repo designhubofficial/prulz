@@ -1,0 +1,50 @@
+Every block type in one document
+
+EYEBROW LABEL
+
+Heading one
+===========
+
+HEADING TWO
+
+Sub heading
+
+A paragraph with bold text, a named link (https://example.com/path),
+a bare email hello@example.com, and a second line.
+
+* First bullet with emphasis
+* Second bullet
+
+1. First numbered
+2. Second numbered
+
+* A card item
+* Another card item
+
+Label one: Value one
+Label two: Value two
+
+42% — Faster onboarding
+1,280 — New teams
+
+A callout with bold inside it.
+
+Press me: https://example.com/go
+
+[Descriptive alt text]
+
+[Captioned alt text]
+
+A short caption under the photo
+
+“Care changes lives.” — A. Patient
+
+Feature heading: Feature body text with bold inside.
+
+Second heading: Second body text.
+
+————————————————————————————————————————
+
+Casey Rivera
+Care Coordinator
+casey@example.com

@@ -1,0 +1,1946 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "mkt-new-service",
+      "name": "New service announcement",
+      "category": "marketing",
+      "description": "Introduce a new service line to your existing patient list.",
+      "bulk": true,
+      "theme": "beacon",
+      "palette": "ocean",
+      "preheader": "Something new at {{practice_name}} - now booking.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "service_name",
+          "label": "Service name",
+          "type": "text",
+          "required": true,
+          "sample": "Group therapy"
+        },
+        {
+          "key": "service_summary",
+          "label": "One-line summary",
+          "type": "text",
+          "required": true,
+          "sample": "Weekly small-group sessions for adults managing anxiety"
+        },
+        {
+          "key": "benefit_1",
+          "label": "Benefit 1",
+          "type": "text",
+          "required": true,
+          "sample": "Meets weekly on Tuesday evenings"
+        },
+        {
+          "key": "benefit_2",
+          "label": "Benefit 2",
+          "type": "text",
+          "required": true,
+          "sample": "Covered by most major insurance plans"
+        },
+        {
+          "key": "benefit_3",
+          "label": "Benefit 3",
+          "type": "text",
+          "required": true,
+          "sample": "Led by a licensed clinician"
+        },
+        {
+          "key": "start_date",
+          "label": "Starts on",
+          "type": "date",
+          "required": true,
+          "sample": "2026-10-06"
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "A small group gathered around a table, in conversation",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        },
+        {
+          "key": "quote_text",
+          "label": "What a patient said",
+          "type": "text",
+          "required": true,
+          "sample": "I was nervous about group therapy at first. It became the most validating hour of my week."
+        },
+        {
+          "key": "quote_name",
+          "label": "Who said it",
+          "type": "text",
+          "required": true,
+          "sample": "Current group member"
+        }
+      ],
+      "body": "Subject: Now offering {{service_name}} at {{practice_name}}\n~ New service\n# {{service_name}}\n\nHi {{first_name}},\n\n{{service_summary}}. Enrollment is open now, with the first session on {{start_date}}.\n\n[Image: {{photo_url}} | {{photo_alt}}]\n\n## What to expect\n\n- {{benefit_1}}\n- {{benefit_2}}\n- {{benefit_3}}\n\n[Quote: {{quote_text}} | {{quote_name}}]\n\n> Not sure whether it is a fit? Reply to this email and we will talk it through, no commitment.\n\n[Button: See availability | {{booking_url}}]\n\n@ {{sender_name}} | {{sender_title}} | {{practice_email}}"
+    },
+    {
+      "id": "mkt-reengagement",
+      "name": "Win-back / re-engagement",
+      "category": "marketing",
+      "description": "Reach a patient who has not been seen in a while. Warm, not pushy.",
+      "bulk": true,
+      "theme": "ledger",
+      "palette": "forest",
+      "preheader": "It has been a while - the door is still open.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "months_since",
+          "label": "Months since last visit",
+          "type": "text",
+          "required": true,
+          "sample": "eight"
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "Sunlight filtering through the trees of a quiet forest",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        }
+      ],
+      "body": "Subject: Checking in from {{practice_name}}\n# It has been a while\n\nHi {{first_name}},\n\nWe noticed it has been about {{months_since}} months since your last visit. No pressure at all, we just wanted you to know the door is open whenever you are ready.\n\n[Image: {{photo_url}} | {{photo_alt}}]\n\nIf anything has changed, or you would like to pick back up where you left off, booking takes about a minute.\n\n[Button: Book a visit | {{booking_url}}]\n\nIf you would rather not hear from us, you can unsubscribe below and we will leave you be.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "mkt-open-slots",
+      "name": "Open appointment slots",
+      "category": "marketing",
+      "description": "Fill near-term gaps in the schedule without sounding desperate.",
+      "bulk": true,
+      "theme": "signal",
+      "palette": "ocean",
+      "preheader": "A few openings the week of {{week_of}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "week_of",
+          "label": "Week of",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-14"
+        },
+        {
+          "key": "slot_summary",
+          "label": "Availability summary",
+          "type": "text",
+          "required": true,
+          "sample": "Tuesday and Thursday mornings"
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "Soft morning light over quiet hills",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        }
+      ],
+      "body": "Subject: Openings the week of {{week_of}}\n~ Availability\n# A few spots have opened up\n\nHi {{first_name}},\n\nWe have {{slot_summary}} open the week of {{week_of}}. If you have been meaning to get on the calendar, this is an easy week to do it.\n\n[Image: {{photo_url}} | {{photo_alt}}]\n\n[Button: Grab a time | {{booking_url}}]\n\n@ {{sender_name}} | {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "mkt-referral-ask",
+      "name": "Ask for a referral or review",
+      "category": "marketing",
+      "description": "Invite a satisfied patient to refer someone or leave a review.",
+      "bulk": true,
+      "theme": "plain",
+      "palette": "graphite",
+      "preheader": "A small favour, if you have a minute.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "review_url",
+          "label": "Review link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/review"
+        }
+      ],
+      "body": "Subject: Would you tell someone about us?\n# A small ask\n\nHi {{first_name}},\n\nIf your care with us has been helpful, the kindest thing you can do is tell someone who might need it too, or leave a short review.\n\nIt takes a minute and it genuinely helps people find care.\n\n[Button: Leave a review | {{review_url}}]\n\nEither way, thank you for trusting us.\n\n@ {{sender_name}} | {{practice_name}}"
+    },
+    {
+      "id": "mkt-event",
+      "name": "Event or webinar invitation",
+      "category": "marketing",
+      "description": "Promote a talk, workshop, or community event.",
+      "bulk": true,
+      "theme": "beacon",
+      "palette": "plum",
+      "preheader": "{{event_name}} on {{event_date}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "event_name",
+          "label": "Event name",
+          "type": "text",
+          "required": true,
+          "sample": "Managing Anxiety: A Practical Workshop"
+        },
+        {
+          "key": "event_date",
+          "label": "Date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-10-15"
+        },
+        {
+          "key": "event_time",
+          "label": "Time",
+          "type": "time",
+          "required": true,
+          "sample": "18:00"
+        },
+        {
+          "key": "event_location",
+          "label": "Location or link",
+          "type": "text",
+          "required": true,
+          "sample": "Online, link sent after registration"
+        },
+        {
+          "key": "speaker_name",
+          "label": "Speaker",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Sam Whitfield"
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1200&h=700&auto=format&fit=crop&crop=faces",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "A speaker presenting to a small, attentive audience",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        },
+        {
+          "key": "register_url",
+          "label": "Registration link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/register"
+        }
+      ],
+      "body": "Subject: You are invited - {{event_name}}\n~ You are invited\n# {{event_name}}\n### With {{speaker_name}}\n\nHi {{first_name}},\n\nJoin us on {{event_date}} at {{event_time}}. Seats are free but limited, and we will send a reminder the day before.\n\n[Image: {{photo_url}} | {{photo_alt}} | With {{speaker_name}}]\n\n| When | {{event_date}} at {{event_time}}\n| Where | {{event_location}}\n| Cost | Free\n\n[Button: Save your seat | {{register_url}}]\n\n@ {{sender_name}} | {{practice_name}}"
+    },
+    {
+      "id": "mkt-seasonal",
+      "name": "Seasonal / awareness campaign",
+      "category": "marketing",
+      "description": "Tie a message to an awareness month or seasonal theme.",
+      "bulk": true,
+      "theme": "pulse",
+      "palette": "ember",
+      "preheader": "{{campaign_theme}} - and what it means for you.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "campaign_theme",
+          "label": "Campaign theme",
+          "type": "text",
+          "required": true,
+          "sample": "Mental Health Awareness Month"
+        },
+        {
+          "key": "campaign_point_1",
+          "label": "Point 1",
+          "type": "text",
+          "required": true,
+          "sample": "Screening is quick, free, and confidential"
+        },
+        {
+          "key": "campaign_point_2",
+          "label": "Point 2",
+          "type": "text",
+          "required": true,
+          "sample": "Most people wait years before asking for help"
+        },
+        {
+          "key": "campaign_point_3",
+          "label": "Point 3",
+          "type": "text",
+          "required": true,
+          "sample": "Starting is easier than people expect"
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "A quiet path through the woods in soft morning light",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        }
+      ],
+      "body": "Subject: {{campaign_theme}}\n~ {{campaign_theme}}\n# Worth a few minutes of your time\n\nHi {{first_name}},\n\nThis month we are talking about something that matters to a lot of our patients.\n\n[Image: {{photo_url}} | {{photo_alt}}]\n\n- {{campaign_point_1}}\n- {{campaign_point_2}}\n- {{campaign_point_3}}\n\n> If any of this lands close to home, reaching out is not a big step. A first conversation is just a conversation.\n\n[Button: Talk to someone | {{booking_url}}]\n\n@ {{sender_name}} | {{practice_name}}"
+    },
+    {
+      "id": "news-monthly",
+      "name": "Monthly newsletter",
+      "category": "newsletter",
+      "description": "The standard monthly round-up: a lead story, a few links, one call to action.",
+      "bulk": true,
+      "theme": "ledger",
+      "palette": "ocean",
+      "preheader": "{{month}} at {{practice_name}} - {{lead_headline}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "month",
+          "label": "Month",
+          "type": "text",
+          "required": true,
+          "sample": "September"
+        },
+        {
+          "key": "lead_headline",
+          "label": "Lead story headline",
+          "type": "text",
+          "required": true,
+          "sample": "Welcoming two new clinicians"
+        },
+        {
+          "key": "lead_body",
+          "label": "Lead story",
+          "type": "text",
+          "required": true,
+          "sample": "We have grown by two this month, which means shorter waits for new patients."
+        },
+        {
+          "key": "item_1",
+          "label": "Item 1",
+          "type": "text",
+          "required": true,
+          "sample": "**New evening hours** on Tuesdays and Thursdays."
+        },
+        {
+          "key": "item_2",
+          "label": "Item 2",
+          "type": "text",
+          "required": true,
+          "sample": "**Insurance update** - we now accept two additional plans."
+        },
+        {
+          "key": "item_3",
+          "label": "Item 3",
+          "type": "text",
+          "required": true,
+          "sample": "**A short read** on sleep and mood, from our blog."
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "The care team at work together",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        },
+        {
+          "key": "photo_caption",
+          "label": "Photo caption",
+          "type": "text",
+          "required": true,
+          "sample": "What changed this month, at a glance"
+        }
+      ],
+      "body": "Subject: {{month}} at {{practice_name}}\n~ {{month}} Newsletter\n# {{lead_headline}}\n\nHi {{first_name}},\n\n{{lead_body}}\n\n[Image: {{photo_url}} | {{photo_alt}} | {{photo_caption}}]\n\n## Also this month\n\n- {{item_1}}\n- {{item_2}}\n- {{item_3}}\n\n---\n\n[Button: Book a visit | {{booking_url}}]\n\nAs always, you can reply to this email and a person will read it.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "news-practice-update",
+      "name": "Practice update round-up",
+      "category": "newsletter",
+      "description": "Short operational round-up: hours, staffing, policies.",
+      "bulk": true,
+      "theme": "stack",
+      "palette": "graphite",
+      "preheader": "Three quick updates from {{practice_name}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "update_1_title",
+          "label": "Update 1 title",
+          "type": "text",
+          "required": true,
+          "sample": "Extended hours"
+        },
+        {
+          "key": "update_1_body",
+          "label": "Update 1",
+          "type": "text",
+          "required": true,
+          "sample": "We are open until 7pm on Tuesdays starting this month."
+        },
+        {
+          "key": "update_2_title",
+          "label": "Update 2 title",
+          "type": "text",
+          "required": true,
+          "sample": "New patient portal"
+        },
+        {
+          "key": "update_2_body",
+          "label": "Update 2",
+          "type": "text",
+          "required": true,
+          "sample": "Forms, messages, and statements now live in one place."
+        },
+        {
+          "key": "update_3_title",
+          "label": "Update 3 title",
+          "type": "text",
+          "required": true,
+          "sample": "Parking"
+        },
+        {
+          "key": "update_3_body",
+          "label": "Update 3",
+          "type": "text",
+          "required": true,
+          "sample": "The north lot is open again after construction."
+        }
+      ],
+      "body": "Subject: Three quick updates\n~ Practice update\n# What changed this month\n\nHi {{first_name}},\n\nShort one this time, three things worth knowing.\n\n## {{update_1_title}}\n\n{{update_1_body}}\n\n## {{update_2_title}}\n\n{{update_2_body}}\n\n## {{update_3_title}}\n\n{{update_3_body}}\n\n@ {{sender_name}} | {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "news-provider-spotlight",
+      "name": "Provider spotlight",
+      "category": "newsletter",
+      "description": "Introduce a clinician to the patient list. Builds trust before the first visit.",
+      "bulk": true,
+      "theme": "ledger",
+      "palette": "forest",
+      "preheader": "Meet {{provider_name}}, now accepting new patients.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "provider_name",
+          "label": "Provider name",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Rosa Iyer"
+        },
+        {
+          "key": "provider_credentials",
+          "label": "Credentials",
+          "type": "text",
+          "required": true,
+          "sample": "MD"
+        },
+        {
+          "key": "provider_focus",
+          "label": "Clinical focus",
+          "type": "text",
+          "required": true,
+          "sample": "anxiety, ADHD, and perinatal mental health"
+        },
+        {
+          "key": "provider_bio",
+          "label": "Short bio",
+          "type": "text",
+          "required": true,
+          "sample": "Rosa joined us after eight years in community health and is happiest doing the unglamorous work of getting a plan right."
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1200&h=700&auto=format&fit=crop&crop=faces",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "Portrait of the new clinician",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        }
+      ],
+      "body": "Subject: Meet {{provider_name}}\n~ Provider spotlight\n# Meet {{provider_name}}\n\nHi {{first_name}},\n\n[Feature: {{photo_url}} | {{photo_alt}} | New to the practice | {{provider_bio}}]\n\nTheir work focuses on {{provider_focus}}.\n\n> {{provider_name}} is accepting new patients now, with shorter waits than our established clinicians.\n\n[Button: Book with {{provider_name}} | {{booking_url}}]\n\n@ {{sender_name}} | {{practice_name}}"
+    },
+    {
+      "id": "news-education",
+      "name": "Patient education piece",
+      "category": "newsletter",
+      "description": "A short educational note. Useful, not salesy.",
+      "bulk": true,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "{{topic}} - the short version.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "topic",
+          "label": "Topic",
+          "type": "text",
+          "required": true,
+          "sample": "Sleep and mood"
+        },
+        {
+          "key": "takeaway_1",
+          "label": "Takeaway 1",
+          "type": "text",
+          "required": true,
+          "sample": "Sleep and mood move together; fixing one often helps the other."
+        },
+        {
+          "key": "takeaway_2",
+          "label": "Takeaway 2",
+          "type": "text",
+          "required": true,
+          "sample": "A consistent wake time matters more than a consistent bedtime."
+        },
+        {
+          "key": "takeaway_3",
+          "label": "Takeaway 3",
+          "type": "text",
+          "required": true,
+          "sample": "If it has been more than a month, it is worth mentioning at your next visit."
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "Soft morning light through the trees",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        }
+      ],
+      "body": "Subject: {{topic}}\n~ Worth knowing\n# {{topic}}\n\nHi {{first_name}},\n\nA short, practical read this month.\n\n[Image: {{photo_url}} | {{photo_alt}}]\n\n1. {{takeaway_1}}\n2. {{takeaway_2}}\n3. {{takeaway_3}}\n\n> This is general information, not medical advice for your situation. Bring it up with your clinician if it applies to you.\n\n@ {{sender_name}} | {{practice_name}}"
+    },
+    {
+      "id": "news-year-review",
+      "name": "Year in review",
+      "category": "newsletter",
+      "description": "Annual round-up with a few numbers and a thank-you.",
+      "bulk": true,
+      "theme": "beacon",
+      "palette": "plum",
+      "preheader": "A year of {{practice_name}}, by the numbers.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "year",
+          "label": "Year",
+          "type": "text",
+          "required": true,
+          "sample": "2026"
+        },
+        {
+          "key": "stat_1_value",
+          "label": "Stat 1 value",
+          "type": "text",
+          "required": true,
+          "sample": "4,200"
+        },
+        {
+          "key": "stat_1_label",
+          "label": "Stat 1 label",
+          "type": "text",
+          "required": true,
+          "sample": "Visits"
+        },
+        {
+          "key": "stat_2_value",
+          "label": "Stat 2 value",
+          "type": "text",
+          "required": true,
+          "sample": "12"
+        },
+        {
+          "key": "stat_2_label",
+          "label": "Stat 2 label",
+          "type": "text",
+          "required": true,
+          "sample": "Clinicians"
+        },
+        {
+          "key": "stat_3_value",
+          "label": "Stat 3 value",
+          "type": "text",
+          "required": true,
+          "sample": "6 days"
+        },
+        {
+          "key": "stat_3_label",
+          "label": "Stat 3 label",
+          "type": "text",
+          "required": true,
+          "sample": "Average wait"
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "A quiet, hopeful landscape",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        },
+        {
+          "key": "closing_note",
+          "label": "Closing note",
+          "type": "text",
+          "required": true,
+          "sample": "Thank you for trusting us with your care this year."
+        }
+      ],
+      "body": "Subject: {{year}} at {{practice_name}}\n~ Year in review\n# Thank you for a good year\n\nHi {{first_name}},\n\nA quick look back at {{year}} - and a genuine thank you for being part of it.\n\n[Image: {{photo_url}} | {{photo_alt}}]\n\n## By the numbers\n\n[Stat: {{stat_1_value}} | {{stat_1_label}}]\n[Stat: {{stat_2_value}} | {{stat_2_label}}]\n[Stat: {{stat_3_value}} | {{stat_3_label}}]\n\n{{closing_note}}\n\n---\n\nHere is to the year ahead.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "sch-confirmation",
+      "name": "Appointment confirmation",
+      "category": "scheduling",
+      "description": "Sent immediately after booking. Confirms the details in writing.",
+      "bulk": false,
+      "theme": "signal",
+      "palette": "ocean",
+      "preheader": "Your appointment on {{appt_date}} is confirmed.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "appt_date",
+          "label": "Appointment date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-15"
+        },
+        {
+          "key": "appt_time",
+          "label": "Appointment time",
+          "type": "time",
+          "required": true,
+          "sample": "14:30"
+        },
+        {
+          "key": "provider_name",
+          "label": "Provider",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Rosa Iyer"
+        },
+        {
+          "key": "visit_type",
+          "label": "Visit type",
+          "type": "text",
+          "required": true,
+          "sample": "Telehealth"
+        },
+        {
+          "key": "visit_location",
+          "label": "Location or link",
+          "type": "text",
+          "required": true,
+          "sample": "A join link arrives 15 minutes before"
+        }
+      ],
+      "body": "Subject: Confirmed - {{appt_date}} at {{appt_time}}\n~ Appointment confirmed\n# You are on the calendar\n\nHi {{first_name}},\n\nYour appointment is confirmed. Here are the details.\n\n| When | {{appt_date}} at {{appt_time}}\n| Who | {{provider_name}}\n| Type | {{visit_type}}\n| Where | {{visit_location}}\n\n> Need to change it? Call {{practice_phone}} at least 24 hours ahead so we can offer the slot to someone else.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "sch-reminder",
+      "name": "Appointment reminder",
+      "category": "scheduling",
+      "description": "Sent 24 to 48 hours before the visit.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "Coming up: {{appt_time}} with {{provider_name}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "appt_date",
+          "label": "Appointment date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-15"
+        },
+        {
+          "key": "appt_time",
+          "label": "Appointment time",
+          "type": "time",
+          "required": true,
+          "sample": "14:30"
+        },
+        {
+          "key": "provider_name",
+          "label": "Provider",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Rosa Iyer"
+        },
+        {
+          "key": "prep_note",
+          "label": "Anything to bring or do",
+          "type": "text",
+          "required": true,
+          "sample": "Bring your insurance card and a list of current medications."
+        }
+      ],
+      "body": "Subject: Reminder - {{appt_date}} at {{appt_time}}\n# A quick reminder\n\nHi {{first_name}},\n\nYou are booked with {{provider_name}} on {{appt_date}} at {{appt_time}}.\n\n{{prep_note}}\n\nIf you cannot make it, please call {{practice_phone}} as soon as you can.\n\n@ {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "sch-reschedule",
+      "name": "Reschedule offer",
+      "category": "scheduling",
+      "description": "When the practice needs to move an appointment.",
+      "bulk": false,
+      "theme": "signal",
+      "palette": "ember",
+      "preheader": "We need to move your {{original_date}} appointment.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "original_date",
+          "label": "Original date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-15"
+        },
+        {
+          "key": "reason",
+          "label": "Reason",
+          "type": "text",
+          "required": true,
+          "sample": "your clinician is unexpectedly out that day"
+        }
+      ],
+      "body": "Subject: Rescheduling your {{original_date}} appointment\n# We need to move your appointment\n\nHi {{first_name}},\n\nI am sorry for the short notice. We need to move your appointment on {{original_date}} because {{reason}}.\n\nYou can pick a new time that works for you, or call us and we will find one together.\n\n[Button: Choose a new time | {{booking_url}}]\n\nApologies for the disruption.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "sch-cancellation",
+      "name": "Cancellation acknowledgement",
+      "category": "scheduling",
+      "description": "Confirms a cancellation and leaves the door open.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "graphite",
+      "preheader": "Your {{appt_date}} appointment is cancelled.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "appt_date",
+          "label": "Appointment date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-15"
+        }
+      ],
+      "body": "Subject: Cancelled - {{appt_date}}\n# Appointment cancelled\n\nHi {{first_name}},\n\nYour appointment on {{appt_date}} has been cancelled, and there is nothing further you need to do.\n\nWhenever you are ready to rebook, we are here.\n\n[Button: Book another time | {{booking_url}}]\n\n@ {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "sch-noshow",
+      "name": "Missed appointment follow-up",
+      "category": "scheduling",
+      "description": "After a no-show. Neutral in tone; assumes good faith.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "We missed you on {{appt_date}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "appt_date",
+          "label": "Missed date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-15"
+        },
+        {
+          "key": "policy_note",
+          "label": "Policy note",
+          "type": "text",
+          "required": true,
+          "sample": "Missed visits without 24 hours notice may carry a fee."
+        }
+      ],
+      "body": "Subject: We missed you on {{appt_date}}\n# Sorry we missed you\n\nHi {{first_name}},\n\nYou were on the calendar for {{appt_date}} and we did not see you. Things come up, we would just like to get you rebooked.\n\n{{policy_note}}\n\n[Button: Rebook | {{booking_url}}]\n\n@ {{sender_name}} | {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "sch-waitlist",
+      "name": "Waitlist opening",
+      "category": "scheduling",
+      "description": "A slot has opened for someone waiting. Time-sensitive.",
+      "bulk": false,
+      "theme": "pulse",
+      "palette": "forest",
+      "preheader": "A {{slot_date}} slot just opened.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "slot_date",
+          "label": "Slot date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-11"
+        },
+        {
+          "key": "slot_time",
+          "label": "Slot time",
+          "type": "time",
+          "required": true,
+          "sample": "09:00"
+        },
+        {
+          "key": "hold_hours",
+          "label": "Hours held",
+          "type": "text",
+          "required": true,
+          "sample": "24"
+        }
+      ],
+      "body": "Subject: A spot opened on {{slot_date}}\n~ Waitlist\n# A slot just opened\n\nHi {{first_name}},\n\nYou asked to be told if something opened sooner. We have {{slot_date}} at {{slot_time}}.\n\n> We can hold it for {{hold_hours}} hours, then it goes back to the general schedule.\n\n[Button: Take this slot | {{booking_url}}]\n\n@ {{sender_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "sch-request",
+      "name": "Appointment request received",
+      "category": "scheduling",
+      "description": "Confirms a booking request from a call or message, and sets a deadline for hearing back.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "We received your request for an appointment.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "visit_reason",
+          "label": "What the visit is for",
+          "type": "text",
+          "required": true,
+          "sample": "a medication check-in"
+        },
+        {
+          "key": "hear_back",
+          "label": "When to expect a confirmed time",
+          "type": "text",
+          "required": true,
+          "sample": "within one business day"
+        }
+      ],
+      "body": "Subject: We received your appointment request\n~ Appointment request\n# Thanks — we are on it\n\nHi {{first_name}},\n\nWe received your request for an appointment for {{visit_reason}}. The calendar is being checked now, and we will send you a confirmed time {{hear_back}}.\n\nIf you have not heard from us by then, call {{practice_phone}} — that usually means a message went astray, not that we are ignoring it.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "sch-missed-call",
+      "name": "We tried to reach you",
+      "category": "scheduling",
+      "description": "Follows a missed call or an unanswered return call. One ask: a good time to ring back.",
+      "bulk": false,
+      "theme": "signal",
+      "palette": "graphite",
+      "preheader": "We tried to reach you about {{callback_topic}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "callback_topic",
+          "label": "What it was about",
+          "type": "text",
+          "required": true,
+          "sample": "your upcoming appointment"
+        },
+        {
+          "key": "best_time",
+          "label": "A good time to call back",
+          "type": "text",
+          "required": true,
+          "sample": "any weekday before 3 pm"
+        }
+      ],
+      "body": "Subject: We tried to reach you\n~ Missed call\n# We tried to reach you\n\nHi {{first_name}},\n\nWe called about {{callback_topic}} and could not get through. Nothing is wrong — we would rather ask you directly than leave it at a voicemail.\n\nYou can call us back at {{practice_phone}}, or reply to this email with a time that suits you and we will ring then. {{best_time}} works well for us.\n\nIf you have already sorted it out, no need to call back at all.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "int-welcome",
+      "name": "New patient welcome",
+      "category": "intake",
+      "description": "First email after a new patient books. Sets expectations.",
+      "bulk": false,
+      "theme": "beacon",
+      "palette": "ocean",
+      "preheader": "Welcome to {{practice_name}} - here is what happens next.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "first_visit_date",
+          "label": "First visit",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-22"
+        },
+        {
+          "key": "provider_name",
+          "label": "Provider",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Rosa Iyer"
+        },
+        {
+          "key": "forms_url",
+          "label": "Intake forms link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/forms"
+        }
+      ],
+      "body": "Subject: Welcome to {{practice_name}}\n~ Welcome\n# We are glad you are here\n\nHi {{first_name}},\n\nYou are booked with {{provider_name}} on {{first_visit_date}}. Here is what happens between now and then.\n\n1. Complete your intake forms, about 15 minutes\n2. We verify your insurance and let you know what to expect for cost\n3. You come in, and the first visit is mostly conversation\n\n[Button: Start your forms | {{forms_url}}]\n\n> Nothing on the forms is a test. Answer what you can, and your clinician will fill in the rest with you.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "int-forms",
+      "name": "Intake packet delivery",
+      "category": "intake",
+      "description": "Sends the forms with a clear deadline.",
+      "bulk": false,
+      "theme": "signal",
+      "palette": "ocean",
+      "preheader": "Your intake forms, about 15 minutes.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "forms_url",
+          "label": "Forms link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/forms"
+        },
+        {
+          "key": "due_date",
+          "label": "Complete by",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-20"
+        }
+      ],
+      "body": "Subject: Your intake forms\n# A few forms before your first visit\n\nHi {{first_name}},\n\nPlease complete these before {{due_date}} so your clinician has time to read them.\n\n[Button: Open your forms | {{forms_url}}]\n\nIt takes about 15 minutes. You can save and come back to it.\n\nIf anything is confusing, call {{practice_phone}} and we will walk through it.\n\n@ {{sender_name}} | {{sender_title}}"
+    },
+    {
+      "id": "int-missing-forms",
+      "name": "Missing paperwork nudge",
+      "category": "intake",
+      "description": "Gentle follow-up when forms are incomplete.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ember",
+      "preheader": "Still need your forms before {{appt_date}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "appt_date",
+          "label": "Appointment date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-22"
+        },
+        {
+          "key": "forms_url",
+          "label": "Forms link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/forms"
+        }
+      ],
+      "body": "Subject: Still need your forms\n# One thing outstanding\n\nHi {{first_name}},\n\nYour visit is on {{appt_date}} and we do not have your completed forms yet.\n\n[Button: Finish your forms | {{forms_url}}]\n\nIf you have hit a snag, reply here or call {{practice_phone}}. We can take it over the phone instead.\n\n@ {{sender_name}} | {{practice_name}}"
+    },
+    {
+      "id": "int-insurance-card",
+      "name": "Insurance card request",
+      "category": "intake",
+      "description": "Requests insurance details before the first visit.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "We need your insurance details to check your benefits.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "upload_url",
+          "label": "Upload link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/upload"
+        }
+      ],
+      "body": "Subject: Your insurance details\n# One more thing before your visit\n\nHi {{first_name}},\n\nTo check your benefits ahead of time, we need a photo of the front and back of your insurance card.\n\n[Button: Upload your card | {{upload_url}}]\n\nOnce we have it we will confirm your expected cost before you come in, so there are no surprises.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "int-telehealth",
+      "name": "Telehealth visit instructions",
+      "category": "intake",
+      "description": "How to join, what to check, what to do if it fails.",
+      "bulk": false,
+      "theme": "stack",
+      "palette": "forest",
+      "preheader": "How to join your {{appt_date}} video visit.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "appt_date",
+          "label": "Appointment date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-22"
+        },
+        {
+          "key": "appt_time",
+          "label": "Appointment time",
+          "type": "time",
+          "required": true,
+          "sample": "14:30"
+        },
+        {
+          "key": "join_url",
+          "label": "Join link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/visit/abc"
+        }
+      ],
+      "body": "Subject: Joining your video visit on {{appt_date}}\n~ Telehealth\n# How to join\n\nHi {{first_name}},\n\nYour video visit is {{appt_date}} at {{appt_time}}.\n\n[Button: Join your visit | {{join_url}}]\n\n## Before you start\n\n+ Use Chrome, Safari, or Edge on a device with a camera\n+ Find a private spot with a steady connection\n+ Join a few minutes early so we can sort out any audio trouble\n\n> If the video will not connect, call {{practice_phone}} and we will switch to phone. You will not lose your appointment.\n\n@ {{sender_name}} | {{practice_name}}"
+    },
+    {
+      "id": "care-lab-results",
+      "name": "Lab results ready",
+      "category": "care",
+      "description": "Tells a patient their results are ready and how they will be shared. Carries no results in the email itself.",
+      "bulk": false,
+      "theme": "signal",
+      "palette": "forest",
+      "preheader": "Your lab results are in — we will walk you through them.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "sample_date",
+          "label": "When the sample was taken",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-04"
+        },
+        {
+          "key": "share_method",
+          "label": "How results will be shared",
+          "type": "choice",
+          "required": true,
+          "sample": "phone",
+          "options": [
+            "secure message",
+            "phone",
+            "the patient portal"
+          ]
+        }
+      ],
+      "body": "Subject: Your lab results are ready\n~ Lab results\n# Your results are in\n\nHi {{first_name}},\n\nThe results from your lab work on {{sample_date}} are back. This email deliberately does not include them — we will go over them with you by {{share_method}}.\n\nIf anything needs attention, a member of your care team will reach out to you directly. Otherwise, questions can go to {{practice_phone}}.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "care-refill",
+      "name": "Refill request update",
+      "category": "care",
+      "description": "Confirms a refill request from a call or message, and states exactly where it stands.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "Where your refill stands.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "med_name",
+          "label": "Medication",
+          "type": "text",
+          "required": true,
+          "sample": "your blood pressure medication"
+        },
+        {
+          "key": "refill_status",
+          "label": "Where it stands",
+          "type": "choice",
+          "required": true,
+          "sample": "with your pharmacy",
+          "options": [
+            "with your pharmacy",
+            "with your provider for approval",
+            "on hold — the prescription needs renewing"
+          ]
+        },
+        {
+          "key": "ready_by",
+          "label": "When it should be ready",
+          "type": "text",
+          "required": true,
+          "sample": "by the end of the day"
+        }
+      ],
+      "body": "Subject: Your refill request\n~ Refill update\n# About your refill\n\nHi {{first_name}},\n\nYour request for {{med_name}} is {{refill_status}}. It should be ready {{ready_by}}.\n\nIf the pharmacy cannot fill it, they will call us — you do not have to chase anything. If you have not heard from either of us by then, call {{practice_phone}} and we will find out what happened.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "care-question",
+      "name": "Question relayed to the care team",
+      "category": "care",
+      "description": "Confirms that a clinical question from a call or message is with the right person, and when to expect an answer.",
+      "bulk": false,
+      "theme": "ledger",
+      "palette": "forest",
+      "preheader": "Your question has been passed along.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "question_summary",
+          "label": "The question, in one line",
+          "type": "text",
+          "required": true,
+          "sample": "whether a new symptom needs an earlier visit"
+        },
+        {
+          "key": "answer_window",
+          "label": "When to expect an answer",
+          "type": "text",
+          "required": true,
+          "sample": "by the end of the day"
+        }
+      ],
+      "body": "Subject: Your question has been passed along\n~ We heard you\n# Your question is with the care team\n\nHi {{first_name}},\n\nThanks for asking about {{question_summary}}. I have passed it to the care team, and someone will get back to you {{answer_window}} by phone or secure message.\n\nIf you need an answer sooner, call {{practice_phone}} and ask for the front desk.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "care-referral-status",
+      "name": "Referral status update",
+      "category": "care",
+      "description": "Tells a patient where their referral stands and what happens next.",
+      "bulk": false,
+      "theme": "ledger",
+      "palette": "ocean",
+      "preheader": "Where your referral stands.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "specialty",
+          "label": "Referred to",
+          "type": "text",
+          "required": true,
+          "sample": "the gastroenterology clinic"
+        },
+        {
+          "key": "referral_status",
+          "label": "Where it stands",
+          "type": "choice",
+          "required": true,
+          "sample": "has been sent",
+          "options": [
+            "has been sent",
+            "has been accepted",
+            "is booked"
+          ]
+        },
+        {
+          "key": "next_step",
+          "label": "What happens next",
+          "type": "text",
+          "required": true,
+          "sample": "the clinic will call to schedule your visit"
+        }
+      ],
+      "body": "Subject: Update on your referral\n~ Referral update\n# Your referral\n\nHi {{first_name}},\n\nHere is where your referral to {{specialty}} stands: it {{referral_status}}.\n\n{{next_step}}\n\nIf you would like us to check on it, call {{practice_phone}} — happy to chase it for you.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "care-work-note",
+      "name": "Work or school note",
+      "category": "care",
+      "description": "Confirms a work or school note request from a call or message, and how it will be delivered.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "forest",
+      "preheader": "We are on it — your note is in progress.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "note_for",
+          "label": "For",
+          "type": "choice",
+          "required": true,
+          "sample": "work",
+          "options": [
+            "work",
+            "school"
+          ]
+        },
+        {
+          "key": "dates_needed",
+          "label": "Dates it should cover",
+          "type": "text",
+          "required": true,
+          "sample": "Monday through Wednesday"
+        },
+        {
+          "key": "deliver_to",
+          "label": "Where to send it",
+          "type": "text",
+          "required": true,
+          "sample": "a fax number or address you provide"
+        },
+        {
+          "key": "ready_by",
+          "label": "When it will be sent",
+          "type": "text",
+          "required": true,
+          "sample": "within one business day"
+        }
+      ],
+      "body": "Subject: Your {{note_for}} note\n~ Note request\n# Your {{note_for}} note\n\nHi {{first_name}},\n\nWe received your request for a note for {{note_for}} covering {{dates_needed}}. A member of the care team is preparing it now.\n\nWe will send it to {{deliver_to}} {{ready_by}}. If those dates change, call {{practice_phone}} and we will adjust it.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "bil-benefits",
+      "name": "Benefits verification result",
+      "category": "billing",
+      "description": "Explains what insurance will and will not cover, in plain language.",
+      "bulk": false,
+      "theme": "ledger",
+      "palette": "graphite",
+      "preheader": "What your plan covers for your visit.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "plan_name",
+          "label": "Insurance plan",
+          "type": "text",
+          "required": true,
+          "sample": "Example Health PPO"
+        },
+        {
+          "key": "copay_amount",
+          "label": "Copay",
+          "type": "money",
+          "required": true,
+          "sample": "35"
+        },
+        {
+          "key": "deductible_remaining",
+          "label": "Deductible remaining",
+          "type": "money",
+          "required": true,
+          "sample": "450"
+        },
+        {
+          "key": "coverage_note",
+          "label": "Note",
+          "type": "text",
+          "required": true,
+          "sample": "Your plan covers visits at 80% once the deductible is met."
+        }
+      ],
+      "body": "Subject: What your plan covers\n~ Benefits check\n# We checked your coverage\n\nHi {{first_name}},\n\nWe heard back from {{plan_name}}. Here is what to expect.\n\n| Plan | {{plan_name}}\n| Copay per visit | {{copay_amount}}\n| Deductible remaining | {{deductible_remaining}}\n\n{{coverage_note}}\n\n> This is an estimate from your insurer, not a guarantee. Final cost depends on how the claim processes.\n\nQuestions? Call {{practice_phone}}.\n\n@ {{sender_name}} | {{sender_title}}"
+    },
+    {
+      "id": "bil-prior-auth",
+      "name": "Prior authorization update",
+      "category": "billing",
+      "description": "Status update on a pending prior authorization.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "An update on your prior authorization.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "auth_status",
+          "label": "Status",
+          "type": "choice",
+          "required": true,
+          "sample": "submitted",
+          "options": [
+            "submitted",
+            "approved",
+            "denied"
+          ]
+        },
+        {
+          "key": "submitted_date",
+          "label": "Submitted on",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-08"
+        },
+        {
+          "key": "next_step",
+          "label": "Next step",
+          "type": "text",
+          "required": true,
+          "sample": "We expect a decision within 5 business days and will call you as soon as we hear."
+        }
+      ],
+      "body": "Subject: Prior authorization - {{auth_status}}\n# Where things stand\n\nHi {{first_name}},\n\nYour prior authorization was {{auth_status}} as of {{submitted_date}}.\n\n{{next_step}}\n\nYou do not need to do anything right now. We are tracking it.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "bil-statement",
+      "name": "Statement reminder",
+      "category": "billing",
+      "description": "Balance reminder. Firm but not aggressive.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "graphite",
+      "preheader": "A balance of {{balance_amount}} on your account.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "balance_amount",
+          "label": "Balance",
+          "type": "money",
+          "required": true,
+          "sample": "120"
+        },
+        {
+          "key": "due_date",
+          "label": "Due by",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-30"
+        },
+        {
+          "key": "pay_url",
+          "label": "Payment link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/pay"
+        }
+      ],
+      "body": "Subject: A balance on your account\n# Account balance\n\nHi {{first_name}},\n\nYour account shows a balance of {{balance_amount}}, due {{due_date}}.\n\n[Button: Pay online | {{pay_url}}]\n\n> If the timing is difficult, call {{practice_phone}} and ask about a payment plan. We would rather set one up than have you avoid care.\n\n@ {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "bil-superbill",
+      "name": "Superbill delivery",
+      "category": "billing",
+      "description": "Sends a superbill for out-of-network reimbursement.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "Your superbill for {{service_period}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "service_period",
+          "label": "Service period",
+          "type": "text",
+          "required": true,
+          "sample": "August 2026"
+        }
+      ],
+      "body": "Subject: Your superbill for {{service_period}}\n# Superbill attached\n\nHi {{first_name}},\n\nAttached is your superbill for {{service_period}}. Submit it to your insurer for out-of-network reimbursement.\n\n## How to submit\n\n1. Sign in to your insurer's member portal\n2. Find \"submit a claim\" or \"out-of-network reimbursement\"\n3. Upload this document and follow the prompts\n\nReimbursement timing is up to your plan, usually a few weeks.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_phone}}"
+    },
+    {
+      "id": "crd-referral-ack",
+      "name": "Referral acknowledgement",
+      "category": "coordination",
+      "description": "Confirms receipt of a referral to the referring provider. Colleague to colleague.",
+      "bulk": false,
+      "theme": "ledger",
+      "palette": "ocean",
+      "preheader": "We received your referral and have started outreach.",
+      "fields": [
+        {
+          "key": "referring_provider",
+          "label": "Referring provider",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Ana Petrov"
+        },
+        {
+          "key": "referral_date",
+          "label": "Referral received",
+          "type": "date",
+          "required": true,
+          "sample": "2026-09-08"
+        },
+        {
+          "key": "attempts",
+          "label": "Outreach attempts",
+          "type": "text",
+          "required": true,
+          "sample": "three"
+        }
+      ],
+      "body": "Subject: Referral received - thank you\n~ Referral received\n# Thank you for the referral\n\nDear {{referring_provider}},\n\nWe received your referral on {{referral_date}} and have started outreach.\n\n## What happens next\n\nOur team will attempt contact by phone and email, up to {{attempts}} times. We will write back with one of three outcomes.\n\n1. Scheduled\n2. Unable to reach after our attempts\n3. Declined services\n\n> On provider matching, we will do our best to honour your preferred clinician. If their wait is long, we will offer someone with comparable training and tell you who.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_email}}"
+    },
+    {
+      "id": "crd-records-request",
+      "name": "Records request",
+      "category": "coordination",
+      "description": "Requests records from another practice, with the authorization attached.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "graphite",
+      "preheader": "Records request with signed authorization attached.",
+      "fields": [
+        {
+          "key": "other_practice",
+          "label": "Practice name",
+          "type": "text",
+          "required": true,
+          "sample": "Riverside Family Medicine"
+        },
+        {
+          "key": "records_needed",
+          "label": "Records needed",
+          "type": "text",
+          "required": true,
+          "sample": "visit notes and medication history from the past two years"
+        },
+        {
+          "key": "fax_number",
+          "label": "Return fax",
+          "type": "phone",
+          "required": true,
+          "sample": "555-555-0199"
+        }
+      ],
+      "body": "Subject: Records request - signed authorization attached\n# Records request\n\nTo the records team at {{other_practice}},\n\nWe are requesting {{records_needed}} for a shared patient. A signed authorization is attached.\n\n| Return by | Secure fax to {{fax_number}}\n| Or | Reply to {{practice_email}}\n| Questions | {{practice_phone}}\n\nThank you for your help.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "crd-handoff",
+      "name": "Provider-to-provider handoff",
+      "category": "coordination",
+      "description": "Transition summary when care moves to another clinician.",
+      "bulk": false,
+      "theme": "ledger",
+      "palette": "forest",
+      "preheader": "Care transition summary.",
+      "fields": [
+        {
+          "key": "receiving_provider",
+          "label": "Receiving provider",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Ana Petrov"
+        },
+        {
+          "key": "transition_date",
+          "label": "Transition date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-10-01"
+        },
+        {
+          "key": "summary_note",
+          "label": "Summary",
+          "type": "text",
+          "required": true,
+          "sample": "Stable on the current plan, next review due in three months."
+        }
+      ],
+      "body": "Subject: Care transition, effective {{transition_date}}\n# Care transition\n\nDear {{receiving_provider}},\n\nCare transitions to your service on {{transition_date}}.\n\n{{summary_note}}\n\nRecords follow under separate cover. If you would like to talk it through before the handover, call {{practice_phone}} and ask for {{sender_name}}.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_email}}"
+    },
+    {
+      "id": "ann-hours",
+      "name": "Holiday or changed hours",
+      "category": "announcements",
+      "description": "Tells patients about a schedule change.",
+      "bulk": true,
+      "theme": "signal",
+      "palette": "ember",
+      "preheader": "Our hours are changing {{change_date}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "change_date",
+          "label": "Effective date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-11-26"
+        },
+        {
+          "key": "new_hours",
+          "label": "New hours",
+          "type": "text",
+          "required": true,
+          "sample": "Closed Thursday and Friday, reopening Monday at 8am"
+        }
+      ],
+      "body": "Subject: Hours change on {{change_date}}\n~ Hours\n# A change to our schedule\n\nHi {{first_name}},\n\nStarting {{change_date}}: {{new_hours}}.\n\n> For anything urgent, call {{practice_phone}} and follow the prompts. If it is an emergency, call 911. For a mental health crisis, call or text 988.\n\n@ {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "ann-closure",
+      "name": "Unplanned closure",
+      "category": "announcements",
+      "description": "Weather or emergency closure. Short and clear.",
+      "bulk": true,
+      "theme": "pulse",
+      "palette": "ember",
+      "preheader": "We are closed today, {{closure_date}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "closure_date",
+          "label": "Closure date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-01-14"
+        },
+        {
+          "key": "closure_reason",
+          "label": "Reason",
+          "type": "text",
+          "required": true,
+          "sample": "snow and unsafe road conditions"
+        },
+        {
+          "key": "rebook_note",
+          "label": "Rebooking",
+          "type": "text",
+          "required": true,
+          "sample": "We will call everyone affected to rebook."
+        }
+      ],
+      "body": "Subject: Closed today, {{closure_date}}\n~ Closure notice\n# We are closed today\n\nHi {{first_name}},\n\nWe are closed {{closure_date}} due to {{closure_reason}}.\n\n{{rebook_note}}\n\n> If it is an emergency, call 911. For a mental health crisis, call or text 988.\n\n@ {{practice_name}} | {{practice_phone}}"
+    },
+    {
+      "id": "ann-policy",
+      "name": "Policy change notice",
+      "category": "announcements",
+      "description": "Announces a policy change with a clear effective date.",
+      "bulk": true,
+      "theme": "ledger",
+      "palette": "graphite",
+      "preheader": "A policy change effective {{effective_date}}.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "policy_name",
+          "label": "Policy",
+          "type": "text",
+          "required": true,
+          "sample": "Late cancellation policy"
+        },
+        {
+          "key": "effective_date",
+          "label": "Effective date",
+          "type": "date",
+          "required": true,
+          "sample": "2026-10-01"
+        },
+        {
+          "key": "policy_detail",
+          "label": "What changes",
+          "type": "text",
+          "required": true,
+          "sample": "cancellations inside 24 hours will carry a $50 fee"
+        },
+        {
+          "key": "policy_reason",
+          "label": "Why",
+          "type": "text",
+          "required": true,
+          "sample": "Late cancellations leave slots empty that someone on the waitlist could have used."
+        }
+      ],
+      "body": "Subject: {{policy_name}} changes {{effective_date}}\n# {{policy_name}}\n\nHi {{first_name}},\n\nStarting {{effective_date}}, {{policy_detail}}.\n\n## Why\n\n{{policy_reason}}\n\nIf this creates a hardship, call {{practice_phone}}. We would rather talk about it than lose you as a patient.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_name}}"
+    },
+    {
+      "id": "out-referral-intro",
+      "name": "Referral partnership introduction",
+      "category": "outreach",
+      "description": "Cold introduction to a practice you would like referrals from. One to one, not bulk.",
+      "bulk": false,
+      "theme": "ledger",
+      "palette": "ocean",
+      "preheader": "An introduction from {{practice_name}}.",
+      "fields": [
+        {
+          "key": "recipient_name",
+          "label": "Their name",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Ana Petrov"
+        },
+        {
+          "key": "our_specialty",
+          "label": "What we do",
+          "type": "text",
+          "required": true,
+          "sample": "outpatient psychiatry for adults and adolescents"
+        },
+        {
+          "key": "current_wait",
+          "label": "Current wait",
+          "type": "text",
+          "required": true,
+          "sample": "under two weeks"
+        },
+        {
+          "key": "photo_url",
+          "label": "Photo",
+          "type": "image",
+          "required": true,
+          "sample": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&h=700&auto=format&fit=crop",
+          "help": "Paste a hosted photo URL or pick one from the library. Recipients need internet to load it."
+        },
+        {
+          "key": "photo_alt",
+          "label": "Photo description (alt text)",
+          "type": "text",
+          "required": true,
+          "sample": "The care team together at the practice",
+          "help": "Shown when images are blocked. Describe what the photo shows."
+        }
+      ],
+      "body": "Subject: Introduction from {{practice_name}}\n# Hello from {{practice_name}}\n\nDear {{recipient_name}},\n\nI am {{sender_name}}, {{sender_title}} at {{practice_name}}. We provide {{our_specialty}}, and we are currently at {{current_wait}} for new patients.\n\n[Feature: {{photo_url}} | {{photo_alt}} | Why patients come to us | Short waits, clear communication, and a team that actually follows up - the things your patients already expect from you.]\n\nI am writing in case your patients ever need somewhere to go.\n\n## What referring to us looks like\n\n+ We acknowledge every referral in writing within one business day\n+ We tell you the outcome, including when we could not reach the patient\n+ We honour your preferred clinician where we can\n\nIf it would help, I am glad to set up a short call.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_email}}"
+    },
+    {
+      "id": "out-recruiting",
+      "name": "Provider recruiting outreach",
+      "category": "outreach",
+      "description": "Approach a clinician about a role. Individual and personal, never bulk.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "forest",
+      "preheader": "A role at {{practice_name}} that might interest you.",
+      "fields": [
+        {
+          "key": "recipient_name",
+          "label": "Their name",
+          "type": "text",
+          "required": true,
+          "sample": "Dr. Sam Whitfield"
+        },
+        {
+          "key": "role_title",
+          "label": "Role",
+          "type": "text",
+          "required": true,
+          "sample": "Psychiatric Nurse Practitioner"
+        },
+        {
+          "key": "role_detail",
+          "label": "What makes it good",
+          "type": "text",
+          "required": true,
+          "sample": "Four-day week, no call, admin support for prior authorizations."
+        },
+        {
+          "key": "why_them",
+          "label": "Why them",
+          "type": "text",
+          "required": true,
+          "sample": "Your background in perinatal care is exactly the gap on our team."
+        }
+      ],
+      "body": "Subject: A {{role_title}} role at {{practice_name}}\n# Hello, {{recipient_name}}\n\nI am {{sender_name}} at {{practice_name}}. We are hiring a {{role_title}}, and I wanted to reach out directly rather than send you to a job board.\n\n{{why_them}}\n\n## About the role\n\n{{role_detail}}\n\nIf the timing is wrong, no problem at all. I would still welcome a conversation for later.\n\n@ {{sender_name}} | {{sender_title}} | {{practice_email}}"
+    },
+    {
+      "id": "out-newsletter-invite",
+      "name": "Newsletter invitation",
+      "category": "outreach",
+      "description": "Invites someone to opt in themselves. Never use this to add anyone to a list yourself.",
+      "bulk": false,
+      "theme": "plain",
+      "palette": "ocean",
+      "preheader": "An invitation to our newsletter, if you would like it.",
+      "fields": [
+        {
+          "key": "first_name",
+          "label": "Recipient first name",
+          "type": "text",
+          "required": true,
+          "sample": "Alex"
+        },
+        {
+          "key": "signup_url",
+          "label": "Signup form link",
+          "type": "url",
+          "required": true,
+          "sample": "https://example.com/newsletter"
+        },
+        {
+          "key": "cadence",
+          "label": "How often",
+          "type": "text",
+          "required": true,
+          "sample": "once a month"
+        },
+        {
+          "key": "content_summary",
+          "label": "What is in it",
+          "type": "text",
+          "required": true,
+          "sample": "practice updates, new clinicians, and the occasional short read"
+        }
+      ],
+      "body": "Subject: Would you like our newsletter?\n# An invitation, not a subscription\n\nHi {{first_name}},\n\nWe send a newsletter {{cadence}} with {{content_summary}}.\n\nIf that sounds useful, you can add yourself here. If not, no action needed and you will not hear from us about it again.\n\n[Button: Sign me up | {{signup_url}}]\n\n@ {{sender_name}} | {{practice_name}}"
+    }
+  ]
+}

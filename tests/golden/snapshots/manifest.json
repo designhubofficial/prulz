@@ -1,0 +1,324 @@
+{
+  "generated": "from tests/golden/reference.cjs",
+  "count": 38,
+  "snapshots": [
+    {
+      "name": "all-blocks--theme-signal",
+      "state": {
+        "theme": "signal"
+      },
+      "htmlBytes": 18503,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--theme-beacon",
+      "state": {
+        "theme": "beacon"
+      },
+      "htmlBytes": 17914,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--theme-ledger",
+      "state": {
+        "theme": "ledger"
+      },
+      "htmlBytes": 18501,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--theme-stack",
+      "state": {
+        "theme": "stack"
+      },
+      "htmlBytes": 18111,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--theme-pulse",
+      "state": {
+        "theme": "pulse"
+      },
+      "htmlBytes": 17917,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--theme-plain",
+      "state": {
+        "theme": "plain"
+      },
+      "htmlBytes": 17333,
+      "textBytes": 785
+    },
+    {
+      "name": "edge-cases--theme-signal",
+      "state": {
+        "theme": "signal"
+      },
+      "htmlBytes": 6208,
+      "textBytes": 217
+    },
+    {
+      "name": "edge-cases--theme-beacon",
+      "state": {
+        "theme": "beacon"
+      },
+      "htmlBytes": 5793,
+      "textBytes": 217
+    },
+    {
+      "name": "edge-cases--theme-ledger",
+      "state": {
+        "theme": "ledger"
+      },
+      "htmlBytes": 6174,
+      "textBytes": 217
+    },
+    {
+      "name": "edge-cases--theme-stack",
+      "state": {
+        "theme": "stack"
+      },
+      "htmlBytes": 5897,
+      "textBytes": 217
+    },
+    {
+      "name": "edge-cases--theme-pulse",
+      "state": {
+        "theme": "pulse"
+      },
+      "htmlBytes": 5776,
+      "textBytes": 217
+    },
+    {
+      "name": "edge-cases--theme-plain",
+      "state": {
+        "theme": "plain"
+      },
+      "htmlBytes": 5880,
+      "textBytes": 217
+    },
+    {
+      "name": "thanks--theme-signal",
+      "state": {
+        "theme": "signal"
+      },
+      "htmlBytes": 10734,
+      "textBytes": 805
+    },
+    {
+      "name": "thanks--theme-beacon",
+      "state": {
+        "theme": "beacon"
+      },
+      "htmlBytes": 10243,
+      "textBytes": 805
+    },
+    {
+      "name": "thanks--theme-ledger",
+      "state": {
+        "theme": "ledger"
+      },
+      "htmlBytes": 10796,
+      "textBytes": 805
+    },
+    {
+      "name": "thanks--theme-stack",
+      "state": {
+        "theme": "stack"
+      },
+      "htmlBytes": 10406,
+      "textBytes": 805
+    },
+    {
+      "name": "thanks--theme-pulse",
+      "state": {
+        "theme": "pulse"
+      },
+      "htmlBytes": 10246,
+      "textBytes": 805
+    },
+    {
+      "name": "thanks--theme-plain",
+      "state": {
+        "theme": "plain"
+      },
+      "htmlBytes": 10140,
+      "textBytes": 805
+    },
+    {
+      "name": "recap--theme-signal",
+      "state": {
+        "theme": "signal"
+      },
+      "htmlBytes": 13551,
+      "textBytes": 1036
+    },
+    {
+      "name": "recap--theme-beacon",
+      "state": {
+        "theme": "beacon"
+      },
+      "htmlBytes": 12962,
+      "textBytes": 1036
+    },
+    {
+      "name": "recap--theme-ledger",
+      "state": {
+        "theme": "ledger"
+      },
+      "htmlBytes": 13821,
+      "textBytes": 1036
+    },
+    {
+      "name": "recap--theme-stack",
+      "state": {
+        "theme": "stack"
+      },
+      "htmlBytes": 13205,
+      "textBytes": 1036
+    },
+    {
+      "name": "recap--theme-pulse",
+      "state": {
+        "theme": "pulse"
+      },
+      "htmlBytes": 13050,
+      "textBytes": 1036
+    },
+    {
+      "name": "recap--theme-plain",
+      "state": {
+        "theme": "plain"
+      },
+      "htmlBytes": 12185,
+      "textBytes": 1036
+    },
+    {
+      "name": "newsletter--theme-signal",
+      "state": {
+        "theme": "signal"
+      },
+      "htmlBytes": 11387,
+      "textBytes": 629
+    },
+    {
+      "name": "newsletter--theme-beacon",
+      "state": {
+        "theme": "beacon"
+      },
+      "htmlBytes": 10896,
+      "textBytes": 629
+    },
+    {
+      "name": "newsletter--theme-ledger",
+      "state": {
+        "theme": "ledger"
+      },
+      "htmlBytes": 11562,
+      "textBytes": 629
+    },
+    {
+      "name": "newsletter--theme-stack",
+      "state": {
+        "theme": "stack"
+      },
+      "htmlBytes": 11059,
+      "textBytes": 629
+    },
+    {
+      "name": "newsletter--theme-pulse",
+      "state": {
+        "theme": "pulse"
+      },
+      "htmlBytes": 10934,
+      "textBytes": 629
+    },
+    {
+      "name": "newsletter--theme-plain",
+      "state": {
+        "theme": "plain"
+      },
+      "htmlBytes": 10544,
+      "textBytes": 629
+    },
+    {
+      "name": "all-blocks--palette-ocean",
+      "state": {
+        "theme": "signal",
+        "palette": "ocean"
+      },
+      "htmlBytes": 18503,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--palette-midnight",
+      "state": {
+        "theme": "signal",
+        "palette": "midnight"
+      },
+      "htmlBytes": 18503,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--palette-forest",
+      "state": {
+        "theme": "signal",
+        "palette": "forest"
+      },
+      "htmlBytes": 18503,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--palette-plum",
+      "state": {
+        "theme": "signal",
+        "palette": "plum"
+      },
+      "htmlBytes": 18503,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--palette-ember",
+      "state": {
+        "theme": "signal",
+        "palette": "ember"
+      },
+      "htmlBytes": 18503,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--palette-graphite",
+      "state": {
+        "theme": "signal",
+        "palette": "graphite"
+      },
+      "htmlBytes": 18503,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--wide-large",
+      "state": {
+        "theme": "ledger",
+        "width": 680,
+        "radius": 0,
+        "btnRadius": 24,
+        "fsBody": 17,
+        "fsTitle": 32
+      },
+      "htmlBytes": 18493,
+      "textBytes": 785
+    },
+    {
+      "name": "all-blocks--with-chrome",
+      "state": {
+        "theme": "beacon",
+        "preheader": "A preheader that shows beside the subject.",
+        "footer": "Example Practice, 123 Example St, Portland OR 97201",
+        "unsub": "https://example.com/unsubscribe"
+      },
+      "htmlBytes": 18688,
+      "textBytes": 838
+    }
+  ]
+}
