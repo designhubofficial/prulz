@@ -2481,15 +2481,33 @@ function setTool(tool: Tool): void {
   if (tool === 'signature') updateSignature();
 }
 
+/**
+ * While the editor module downloads, its start-screen controls are inert (see
+ * index.html). A file dropped in that window would make the browser navigate
+ * away to open it, so hold the drop and say why.
+ */
+function holdEarlyPdfDrop(event: DragEvent): void {
+  if (pdfEditor) return;
+  event.preventDefault();
+  if (event.type === 'drop') toast('The PDF editor is still loading. Drop the file again in a moment.');
+}
+
 function ensurePdfEditor(): void {
   if (pdfEditor || pdfEditorPromise) return;
+  const note = els.pdfTool.querySelector<HTMLElement>('#pdfLoadingNote');
+  if (note) note.textContent = 'Loading the PDF editor…';
+  els.pdfTool.addEventListener('dragover', holdEarlyPdfDrop);
+  els.pdfTool.addEventListener('drop', holdEarlyPdfDrop);
   pdfEditorPromise = import('./pdf/editor.js').then(({ initPdfEditor }) => {
     const controller = initPdfEditor({ root: els.pdfTool, toast, store, persistent });
     pdfEditor = controller;
+    els.pdfTool.removeEventListener('dragover', holdEarlyPdfDrop);
+    els.pdfTool.removeEventListener('drop', holdEarlyPdfDrop);
     controller.setVisible(state.tool === 'pdf');
     return controller;
   }).catch(() => {
     pdfEditorPromise = null;
+    if (note) note.textContent = 'The PDF editor could not load. Check your connection, then reopen the PDF editor.';
     toast('The PDF editor could not load. Refresh and try again.');
     return null;
   });
@@ -2948,7 +2966,7 @@ els.clearData.addEventListener('click', async () => {
   // Name what is about to go rather than asking for blind confirmation.
   const summary = await describeStoredData(store);
   const parts = [
-    (await store.get('workspace:v1')) ? 'your follow-ups, provider directory, favorites, workspace notes and general chat' : '',
+    (await store.get('workspace:v1')) ? 'your follow-ups, provider directory, favorites and workspace notes' : '',
     summary.drafts ? `${summary.drafts} saved draft${summary.drafts === 1 ? '' : 's'}` : '',
     summary.transcripts
       ? `${summary.transcripts} call transcript${summary.transcripts === 1 ? '' : 's'}`

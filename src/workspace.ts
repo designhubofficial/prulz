@@ -5,10 +5,7 @@ import { audienceForTemplate, CATEGORY_GROUPS, CATEGORY_LABELS } from './library
 type View = 'overview' | 'library' | 'followups' | 'providers' | 'pdf' | 'templates' | 'signature' | 'transcribe';
 interface Followup { id: string; title: string; due: string; priority: string; done: boolean }
 interface Provider { id: string; name: string; specialty: string; practice: string; email: string }
-interface ChatMessage { id: string; authorName: string; text: string; createdAt: number }
-interface ChatState { displayName: string; messages: ChatMessage[]; readMessageIds: string[] }
-interface ChatPosition { left: number; top: number }
-interface WorkspaceData { followups: Followup[]; providers: Provider[]; favorites: string[]; recent: string[]; note: string; chat: ChatState }
+interface WorkspaceData { followups: Followup[]; providers: Provider[]; favorites: string[]; recent: string[]; note: string }
 interface Options {
   store: StorageAdapter; persistent: boolean; templates: Template[]; toast: (message: string) => void;
   openTool: (tool: 'pdf' | 'templates' | 'signature' | 'transcribe') => void;
@@ -16,12 +13,8 @@ interface Options {
   openSettings: () => void;
 }
 const KEY = 'workspace:v1';
-const CHAT_MESSAGE_LIMIT = 200;
-const CHAT_NAME_LIMIT = 60;
-const CHAT_TEXT_LIMIT = 1000;
 const emptyData = (): WorkspaceData => ({
   followups: [], providers: [], favorites: [], recent: [], note: '',
-  chat: { displayName: '', messages: [], readMessageIds: [] },
 });
 let data = emptyData();
 let options: Options;
@@ -30,9 +23,6 @@ let query = '';
 let category = 'all';
 let onlyFavorites = false;
 let taskFilter = 'open';
-let chatOpen = false;
-let chatPosition: ChatPosition | null = null;
-let chatDrag: { pointerId: number; offsetX: number; offsetY: number } | null = null;
 let ready = false;
 let writeQueue: Promise<void> = Promise.resolve();
 const $ = (id: string) => document.getElementById(id)!;
@@ -47,7 +37,6 @@ const paths: Record<string, string> = {
   templates: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 6 9 7 9-7"/>',
   followups: '<rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 2v4m8-4v4M8 13l3 3 5-6"/>',
   providers: '<circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3m2-16a3 3 0 0 1 0 6m1 4a5 5 0 0 1 3 6"/>',
-  chat: '<path d="M20 11.5a7.5 7.5 0 0 1-7.8 7.5c-1.3 0-2.5-.3-3.6-.9L4 20l1.2-3.7A7.4 7.4 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5h1A7.5 7.5 0 0 1 20 11.5Z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>',
   signature: '<path d="m4 16 11-11 4 4-11 11H4v-4Zm9-9 4 4M3 23h18"/>',
   transcribe: '<rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2m-7 9v3m-4 0h8"/>',
   pdf: '<path d="M6 3h8l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8 13h5M8 17h6"/>',
@@ -57,7 +46,7 @@ const paths: Record<string, string> = {
   settings: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>',
 };
 const icon = (name: string) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (paths[name] ?? paths.templates) + '</svg>';
-const labels: Record<View, string> = { overview: 'Overview', library: 'Email library', followups: 'Follow-ups', providers: 'Provider directory', pdf:'PDF editor', templates: 'Email editor', signature: 'Signature studio', transcribe: 'Call transcriber' };
+const labels: Record<View, string> = { overview: 'Overview', library: 'Email library', followups: 'Follow-ups', providers: 'Provider directory', pdf: 'PDF editor', templates: 'Email editor', signature: 'Signature studio', transcribe: 'Call transcriber' };
 
 async function save(): Promise<boolean> {
   const snapshot = structuredClone(data);
@@ -92,7 +81,6 @@ function shell(): void {
     const status = document.querySelector('.local-status');
     if (status) status.textContent = 'Storage unavailable — this session only';
   }
-  renderChatWidget();
 }
 export function workspaceToolChanged(tool: 'pdf' | 'templates' | 'signature' | 'transcribe'): void {
   if (!ready) return;
@@ -176,214 +164,6 @@ function providers(): string {
     + '<label class="hub-search provider-search">' + icon('search') + '<input type="search" id="hubSearch" placeholder="Search name, practice, or specialty…" aria-label="Search providers" value="' + escape(query) + '"></label><div class="provider-grid">' + (filtered.length ? filtered.map(p => '<article class="panel provider-card"><div class="provider-card-top"><span class="contact-avatar">' + escape(p.name.split(' ').filter(Boolean).slice(-2).map(s => s[0]).join('')) + '</span><button class="icon-button" data-edit-provider="' + p.id + '" aria-label="Edit ' + escape(p.name) + '">···</button></div><h2>' + escape(p.name) + '</h2><span class="category-label">' + escape(p.specialty || 'Provider') + '</span><p>' + escape(p.practice || 'Practice not added') + '</p><p class="contact-email">' + escape(p.email || 'Email not added') + '</p><button class="btn" data-compose-provider="' + p.id + '">' + icon('templates') + ' Write an introduction</button></article>').join('') : '<div class="empty-state"><span class="empty-network">' + icon('providers') + '</span><h3>' + (query ? 'No matching providers' : 'Your network starts with one connection') + '</h3><p>' + (query ? 'Try a different name or specialty.' : 'Add a colleague to start building your practice directory.') + '</p><button class="btn primary" data-add-provider>＋ Add provider</button></div>') + '</div>';
 }
 
-function chatInitials(name: string): string {
-  const initials = name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('');
-  return (initials || '?').toUpperCase();
-}
-function chatTime(timestamp: number): string {
-  const date = new Date(timestamp);
-  if (Number.isNaN(date.getTime())) return 'Just now';
-  const now = new Date();
-  const sameDay = date.getFullYear() === now.getFullYear()
-    && date.getMonth() === now.getMonth()
-    && date.getDate() === now.getDate();
-  return sameDay
-    ? date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
-    : date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
-const CHAT_EMOJIS = ['👋', '✨', '😊', '👍', '❤️', '🙌', '😂', '💡', '🎉', '🤝', '🌿', '☕'];
-function chatUnreadCount(messages: ChatMessage[] = data.chat.messages): number {
-  const readIds = new Set(data.chat.readMessageIds);
-  return messages.filter(message => !readIds.has(message.id)).length;
-}
-function markChatRead(): boolean {
-  const readIds = new Set(data.chat.readMessageIds);
-  const before = data.chat.readMessageIds.join('|');
-  data.chat.messages.forEach(message => readIds.add(message.id));
-  data.chat.readMessageIds = Array.from(readIds).slice(-CHAT_MESSAGE_LIMIT);
-  return before !== data.chat.readMessageIds.join('|');
-}
-function clampChatPosition(panel: HTMLElement, left: number, top: number): ChatPosition {
-  const gutter = 12;
-  const maxLeft = Math.max(gutter, window.innerWidth - panel.offsetWidth - gutter);
-  const maxTop = Math.max(gutter, window.innerHeight - panel.offsetHeight - gutter);
-  return {
-    left: Math.round(Math.min(Math.max(left, gutter), maxLeft)),
-    top: Math.round(Math.min(Math.max(top, gutter), maxTop)),
-  };
-}
-function applyChatPosition(panel: HTMLElement, position: ChatPosition): void {
-  chatPosition = clampChatPosition(panel, position.left, position.top);
-  panel.style.left = chatPosition.left + 'px';
-  panel.style.top = chatPosition.top + 'px';
-  panel.style.right = 'auto';
-  panel.style.bottom = 'auto';
-}
-function chatMessageMarkup(message: ChatMessage): string {
-  const date = new Date(message.createdAt);
-  const datetime = Number.isNaN(date.getTime()) ? '' : ' datetime="' + date.toISOString() + '"';
-  return '<article class="chat-widget-message"><div class="chat-widget-avatar" aria-hidden="true">' + escape(chatInitials(message.authorName)) + '</div><div class="chat-widget-message-copy"><div class="chat-widget-message-meta"><strong>' + escape(message.authorName) + '</strong><time' + datetime + '>' + escape(chatTime(message.createdAt)) + '</time></div><p>' + escape(message.text).replace(/\n/g, '<br>') + '</p></div></article>';
-}
-function chatWidgetMarkup(): string {
-  const displayName = data.chat.displayName.trim();
-  const messages = data.chat.messages.slice().sort((a, b) => a.createdAt - b.createdAt);
-  const unreadCount = chatUnreadCount(messages);
-  const messageCount = messages.length === 1 ? '1 message' : messages.length + ' messages';
-  const messageList = messages.length
-    ? messages.map(chatMessageMarkup).join('')
-    : '<div class="chat-widget-empty"><span class="chat-widget-empty-mark">✦</span><strong>No messages yet</strong><p>Be the first to say hello.</p></div>';
-  const identity = displayName
-    ? '<div class="chat-widget-identity"><div><span class="chat-widget-identity-label">Chatting as</span><strong>' + escape(displayName) + '</strong></div><button type="button" class="chat-widget-link" data-chat-change-name>Change name</button></div>'
-    : '<form class="chat-widget-name-form" id="chatNameForm"><div class="chat-widget-name-copy"><span class="chat-widget-kicker">FIRST, SAY HELLO</span><label for="chatName">What should we call you?</label><p>Your name appears beside each message.</p></div><div class="chat-widget-name-controls"><input id="chatName" name="name" type="text" maxlength="' + CHAT_NAME_LIMIT + '" autocomplete="nickname" placeholder="e.g. Maya" required><button type="submit" class="chat-widget-join">Join</button></div></form>';
-  const composer = displayName
-    ? '<form class="chat-widget-composer" id="chatComposer"><div class="chat-widget-compose-row"><button type="button" class="chat-widget-emoji-toggle" data-chat-emoji-toggle aria-expanded="false" aria-controls="chatEmojiMenu" aria-label="Add an emoji" title="Add an emoji">☺</button><label class="visually-hidden" for="chatMessage">Write a message</label><textarea id="chatMessage" name="message" maxlength="' + CHAT_TEXT_LIMIT + '" rows="1" placeholder="Write something kind…" required></textarea><button type="submit" class="chat-widget-send" aria-label="Send message" title="Send message">↗</button></div><div class="chat-emoji-menu" id="chatEmojiMenu" role="toolbar" aria-label="Choose an emoji" hidden>' + CHAT_EMOJIS.map(emoji => '<button type="button" data-chat-emoji="' + emoji + '" aria-label="Insert ' + emoji + '">' + emoji + '</button>').join('') + '</div><div class="chat-widget-composer-hint"><span>Enter to send</span><span>Shift + Enter for a new line</span></div></form>'
-    : '<div class="chat-widget-locked"><span class="chat-widget-locked-icon">↳</span><span>Set your name above to join the conversation.</span></div>';
-
-  const launcherLabel = chatOpen
-    ? 'Close general chat'
-    : unreadCount ? 'Open general chat, ' + unreadCount + (unreadCount === 1 ? ' unread message' : ' unread messages') : 'Open general chat';
-  return '<button type="button" class="chat-launcher' + (chatOpen ? ' is-open' : '') + '" data-chat-launcher aria-expanded="' + chatOpen + '" aria-controls="globalChatPanel" aria-label="' + launcherLabel + '" title="' + launcherLabel + '"><span class="chat-launcher-icon">' + icon('chat') + '</span>' + (unreadCount ? '<span class="chat-launcher-count" aria-label="' + unreadCount + ' unread messages">' + unreadCount + '</span>' : '') + '</button>'
-    + (chatOpen ? '<section class="chat-popover" id="globalChatPanel" data-chat-drag-panel role="dialog" aria-modal="false" aria-labelledby="globalChatTitle" aria-describedby="globalChatMoveHint"><div class="chat-popover-head" data-chat-drag-handle title="Drag to move chat"><div class="chat-popover-brand"><span class="chat-popover-icon">' + icon('chat') + '</span><div><span class="chat-widget-kicker">TEAM SPACE</span><h2 id="globalChatTitle">General chat</h2></div></div><div class="chat-popover-actions"><span class="chat-online"><i></i> Open to everyone</span><button type="button" class="chat-popover-minimize" data-chat-minimize aria-label="Minimize general chat" title="Minimize chat">−</button><button type="button" class="chat-popover-close" data-chat-close aria-label="Close general chat" title="Close chat">×</button></div></div><p class="visually-hidden" id="globalChatMoveHint">Drag the chat header to move this window.</p><div class="chat-popover-meta"><span>' + messageCount + '</span><span><i class="local-dot"></i> Saved here</span></div>' + identity + '<div class="chat-widget-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Global chat messages">' + messageList + '</div>' + composer + '</section>' : '');
-}
-function focusChatWidget(): void {
-  window.requestAnimationFrame(() => {
-    const target = document.getElementById(data.chat.displayName ? 'chatMessage' : 'chatName');
-    target?.focus();
-    const messages = document.getElementById('chatMessages');
-    if (messages) messages.scrollTop = messages.scrollHeight;
-  });
-}
-function focusChatLauncher(): void {
-  window.requestAnimationFrame(() => document.querySelector<HTMLButtonElement>('[data-chat-launcher]')?.focus());
-}
-function insertChatEmoji(textarea: HTMLTextAreaElement, emoji: string): void {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  textarea.setRangeText(emoji, start, end, 'end');
-  textarea.focus();
-}
-function bindChatWidget(): void {
-  const root = document.getElementById('chatWidget');
-  if (!root) return;
-  root.querySelector<HTMLButtonElement>('[data-chat-launcher]')?.addEventListener('click', () => {
-    chatOpen = !chatOpen;
-    chatDrag = null;
-    if (chatOpen && markChatRead()) void save();
-    renderChatWidget();
-    if (chatOpen) focusChatWidget();
-    else focusChatLauncher();
-  });
-  if (!chatOpen) return;
-  root.querySelector<HTMLButtonElement>('[data-chat-close]')?.addEventListener('click', () => {
-    chatOpen = false;
-    chatDrag = null;
-    renderChatWidget();
-    focusChatLauncher();
-  });
-  root.querySelector<HTMLButtonElement>('[data-chat-minimize]')?.addEventListener('click', () => {
-    chatOpen = false;
-    chatDrag = null;
-    renderChatWidget();
-    focusChatLauncher();
-  });
-  const chatPanel = root.querySelector<HTMLElement>('[data-chat-drag-panel]');
-  const dragHandle = root.querySelector<HTMLElement>('[data-chat-drag-handle]');
-  if (chatPanel && dragHandle) {
-    const stopDragging = () => {
-      chatDrag = null;
-      chatPanel.classList.remove('is-dragging');
-    };
-    dragHandle.addEventListener('pointerdown', event => {
-      if (event.button !== 0 || (event.target as Element | null)?.closest('button, a, input, textarea, select')) return;
-      const rect = chatPanel.getBoundingClientRect();
-      applyChatPosition(chatPanel, { left: rect.left, top: rect.top });
-      chatDrag = {
-        pointerId: event.pointerId,
-        offsetX: event.clientX - (chatPosition?.left ?? rect.left),
-        offsetY: event.clientY - (chatPosition?.top ?? rect.top),
-      };
-      chatPanel.classList.add('is-dragging');
-      dragHandle.setPointerCapture(event.pointerId);
-      event.preventDefault();
-    });
-    dragHandle.addEventListener('pointermove', event => {
-      if (!chatDrag || event.pointerId !== chatDrag.pointerId) return;
-      applyChatPosition(chatPanel, {
-        left: event.clientX - chatDrag.offsetX,
-        top: event.clientY - chatDrag.offsetY,
-      });
-    });
-    dragHandle.addEventListener('pointerup', event => {
-      if (chatDrag?.pointerId !== event.pointerId) return;
-      if (dragHandle.hasPointerCapture(event.pointerId)) dragHandle.releasePointerCapture(event.pointerId);
-      stopDragging();
-    });
-    dragHandle.addEventListener('pointercancel', stopDragging);
-    dragHandle.addEventListener('lostpointercapture', stopDragging);
-  }
-  const chatNameForm = root.querySelector<HTMLFormElement>('#chatNameForm');
-  const chatName = root.querySelector<HTMLInputElement>('#chatName');
-  if (chatNameForm && chatName) chatNameForm.onsubmit = event => {
-    event.preventDefault();
-    const name = chatName.value.trim().replace(/\s+/g, ' ').slice(0, CHAT_NAME_LIMIT);
-    if (!name) { chatName.focus(); return; }
-    data.chat.displayName = name;
-    void save();
-    renderChatWidget();
-    focusChatWidget();
-  };
-  root.querySelectorAll<HTMLElement>('[data-chat-change-name]').forEach(button => button.addEventListener('click', () => {
-    data.chat.displayName = '';
-    void save();
-    renderChatWidget();
-    focusChatWidget();
-  }));
-  const chatForm = root.querySelector<HTMLFormElement>('#chatComposer');
-  const chatMessage = root.querySelector<HTMLTextAreaElement>('#chatMessage');
-  const emojiToggle = root.querySelector<HTMLButtonElement>('[data-chat-emoji-toggle]');
-  const emojiMenu = root.querySelector<HTMLElement>('#chatEmojiMenu');
-  if (emojiToggle && emojiMenu && chatMessage) {
-    emojiToggle.onclick = () => {
-      const open = emojiMenu.hidden;
-      emojiMenu.hidden = !open;
-      emojiToggle.setAttribute('aria-expanded', String(open));
-    };
-    emojiMenu.querySelectorAll<HTMLButtonElement>('[data-chat-emoji]').forEach(button => button.onclick = () => {
-      insertChatEmoji(chatMessage, button.dataset.chatEmoji ?? '');
-      emojiMenu.hidden = true;
-      emojiToggle.setAttribute('aria-expanded', 'false');
-    });
-  }
-  if (chatForm && chatMessage) {
-    chatMessage.onkeydown = event => {
-      if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
-        event.preventDefault();
-        chatForm.requestSubmit();
-      }
-    };
-    chatForm.onsubmit = event => {
-      event.preventDefault();
-      const text = chatMessage.value.trim().slice(0, CHAT_TEXT_LIMIT);
-      const authorName = data.chat.displayName.trim();
-      if (!authorName || !text) { chatMessage.focus(); return; }
-      data.chat.messages = [...data.chat.messages, {
-        id: crypto.randomUUID(), authorName, text, createdAt: Date.now(),
-      }].slice(-CHAT_MESSAGE_LIMIT);
-      markChatRead();
-      void save();
-      renderChatWidget();
-      focusChatWidget();
-    };
-  }
-}
-function renderChatWidget(): void {
-  const root = document.getElementById('chatWidget');
-  if (!root) return;
-  root.innerHTML = chatWidgetMarkup();
-  const panel = root.querySelector<HTMLElement>('[data-chat-drag-panel]');
-  if (panel && chatPosition) applyChatPosition(panel, chatPosition);
-  bindChatWidget();
-}
 function render(): void {
   $('hub').innerHTML = view === 'overview' ? overview() : view === 'library' ? library() : view === 'followups' ? followups() : providers();
   const count = document.querySelector('.result-count');
@@ -481,47 +261,24 @@ export async function initWorkspace(config: Options): Promise<void> {
   options = config;
   const stored = await options.store.get<WorkspaceData>(KEY);
   data = { ...emptyData(), ...(stored ?? {}) };
-  const storedChat = stored?.chat;
-  const messages = Array.isArray(storedChat?.messages)
-    ? storedChat.messages.filter((message): message is ChatMessage => !!message
-      && typeof message.id === 'string'
-      && typeof message.authorName === 'string'
-      && typeof message.text === 'string'
-      && typeof message.createdAt === 'number').slice(-CHAT_MESSAGE_LIMIT)
-    : [];
-  const messageIds = new Set(messages.map(message => message.id));
-  data.chat = {
-    displayName: typeof storedChat?.displayName === 'string' ? storedChat.displayName.slice(0, CHAT_NAME_LIMIT) : '',
-    messages,
-    readMessageIds: Array.isArray(storedChat?.readMessageIds)
-      ? storedChat.readMessageIds.filter((id): id is string => typeof id === 'string' && messageIds.has(id)).slice(-CHAT_MESSAGE_LIMIT)
-      : [],
-  };
+  // General chat was removed: it only ever saved in the sender's own browser,
+  // so it looked like a team chat without being one. Drop any messages an older
+  // build stored, and save straight away so they do not linger on disk.
+  if (stored && 'chat' in stored) {
+    delete (data as WorkspaceData & { chat?: unknown }).chat;
+    void save();
+  }
   ready = true;
   navigate('overview');
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && chatOpen) {
-      chatOpen = false;
-      chatDrag = null;
-      renderChatWidget();
-      focusChatLauncher();
-      return;
-    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k' && !document.querySelector('dialog[open]')) {
       event.preventDefault(); navigate('library'); $('hubSearch').focus();
     }
-  });
-  window.addEventListener('resize', () => {
-    const panel = document.querySelector<HTMLElement>('[data-chat-drag-panel]');
-    if (chatOpen && panel && chatPosition) applyChatPosition(panel, chatPosition);
   });
 }
 export function addWorkspaceFollowup(title: string): void { if (ready) editTask(undefined, title); }
 export async function resetWorkspace(): Promise<void> {
   await writeQueue.catch(() => {});
   data = emptyData();
-  chatOpen = false;
-  chatPosition = null;
-  chatDrag = null;
   if (ready) { shell(); if (!$('hub').hidden) render(); }
 }

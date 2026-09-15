@@ -1556,6 +1556,10 @@ export function initPdfEditor({ root, toast, store, persistent = false }: PdfEdi
 
   clearSignaturePad();
   void refreshSavedSignatures();
+  // index.html ships the start-screen controls inert, so nothing looks clickable
+  // before the listeners above exist. They are live from here on.
+  root.querySelectorAll('[data-pdf-until-ready]').forEach((node) => node.removeAttribute('inert'));
+  delete root.dataset.loading;
   els.editorShell.hidden = true;
   els.empty.hidden = false;
   updateToolButtons();

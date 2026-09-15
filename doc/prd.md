@@ -1,14 +1,14 @@
 # Product Requirements Document
-## Dispatch — Email Template Studio for Virtual Healthcare Assistants
+## Prulene's Dashboard (formerly Dispatch) — Email Template Studio for Virtual Healthcare Assistants
 
 | | |
 |---|---|
-| **Product** | Dispatch (working name) |
+| **Product** | Prulene's Dashboard (formerly "Dispatch") |
 | **Audience** | Virtual healthcare assistants — VAs supporting medical and behavioral health practices |
 | **Origin** | Built for UpWell Psychiatry, LLC; generalized for any VHA |
-| **Version** | 0.6 — Phases 0 and 1 complete; call transcriber added |
-| **Date** | 2026-09-07 |
-| **Status** | In build. See §7 for what has shipped. |
+| **Version** | 0.8 — Phases 0–2 and the call transcriber shipped, plus the provider workspace and PDF editor. Phase 3 not started. |
+| **Date** | 2026-09-15 |
+| **Status** | Live at https://prulz.vercel.app, deployed from `designhubofficial/prulz`. See §5 for feature status and §7 for phases. |
 
 ---
 
@@ -285,37 +285,37 @@ Images are stripped from share links and replaced with a placeholder, because ba
 A feature is done when every box is checked.
 
 ### F1 — Template library
-- [ ] ≥ 35 starter templates across the 6 categories in §4.1
-- [ ] Templates are JSON data, not hard-coded markup
-- [ ] Browse by category; search by name and body text
-- [ ] Preview before opening
+- [x] ≥ 35 starter templates across the 6 categories in §4.1 — 75 across 9 categories, grouped into three families
+- [x] Templates are JSON data, not hard-coded markup — `templates.json`, plus provider templates declared as data in `providers.ts`
+- [x] Browse by category; search by name and body text
+- [x] Preview before opening — gallery cards show a thumbnail of the template's own design
 - [ ] Duplicate any template to a personal copy
-- [ ] Every starter passes the full check suite with zero errors — **the library is the reference implementation of good practice**
-- [ ] No starter contains PHI, real names, or real contact details
+- [x] Every starter passes the full check suite with zero errors — **the library is the reference implementation of good practice**
+- [x] No starter contains PHI, real names, or real contact details
 
 ### F2 — Merge fields and Fill mode
-- [ ] Field manifest per template with the nine types in §4.2
-- [ ] Type-appropriate inputs and validation; dates render in long form
-- [ ] Fill mode: form on one side, live preview on the other
-- [ ] **Export and copy hard-blocked while any required field is unresolved**, with a list of what is missing
-- [ ] Practice defaults auto-fill from the brand kit
-- [ ] Recent values offered per field, stored locally
-- [ ] Fields auto-detected from body text when a manifest is absent
+- [x] Field manifest per template with the nine types in §4.2 — plus `image` (F10)
+- [x] Type-appropriate inputs and validation; dates render in long form
+- [x] Fill mode: form on one side, live preview on the other
+- [x] **Export and copy hard-blocked while any required field is unresolved**, with a list of what is missing
+- [x] Practice defaults auto-fill from the brand kit
+- [x] Recent values offered per field, stored locally
+- [x] Fields auto-detected from body text when a manifest is absent
 
 ### F3 — Pre-send review
-- [ ] All existing checks preserved and passing
-- [ ] Five new groups per §4.3, each collapsible, each finding explaining *why* it matters
-- [ ] Findings ranked error → warning → pass
-- [ ] PHI scanner runs before save and before export
-- [ ] PHI findings offer one-click replacement with a merge field
-- [ ] Errors block export; warnings do not
-- [ ] The whole suite runs in under 150ms on a long template — it runs on every keystroke
+- [x] All existing checks preserved and passing
+- [x] Five new groups per §4.3, each collapsible, each finding explaining *why* it matters
+- [x] Findings ranked error → warning → pass
+- [ ] PHI scanner runs before save and before export — it runs live on every keystroke and gates export; there is no save-a-template step yet
+- [ ] PHI findings offer one-click replacement with a merge field — `phi.ts` produces the replacement suggestion; no button applies it yet
+- [x] Errors block export; warnings do not
+- [x] The whole suite runs in under 150ms on a long template — it runs on every keystroke
 
 ### F4 — Rendering matrix
-- [ ] Eight preview modes per §4.4
+- [ ] Eight preview modes per §4.4 — three so far: desktop, mobile, plain text (the signature preview adds light, dark, images off)
 - [ ] Two modes side by side
-- [ ] Gmail clip point drawn as a line in the preview
-- [ ] VML button fallback in generated Outlook HTML
+- [ ] Gmail clip point drawn as a line in the preview — the size limit is checked in the review instead
+- [x] VML button fallback in generated Outlook HTML
 - [ ] Preview switching does not re-parse from scratch
 
 ### F5 — Snippets and syntax
@@ -326,11 +326,11 @@ A feature is done when every box is checked.
 - [ ] In-app syntax reference matching Appendix A
 
 ### F6 — Export
-- [ ] Copy rich, HTML, plain text — preserved
+- [x] Copy rich, HTML, plain text — preserved
 - [ ] `.eml` export opening correctly in Outlook and Apple Mail
-- [ ] Paste-tuned variants for Gmail, Outlook, Zoho
+- [ ] Paste-tuned variants for Gmail, Outlook, Zoho — Gmail done (`src/export/gmail.ts`); Outlook and Zoho not yet
 - [ ] Print/PDF of the rendered email
-- [ ] Every export path runs the export guard first
+- [x] Every export path runs the export guard first
 
 ### F7 — Sharing
 - [ ] Bundle export/import per §4.7, with conflict resolution on import
@@ -340,17 +340,17 @@ A feature is done when every box is checked.
 - [ ] **Imported bundles treated as untrusted input** — HTML sanitized, no script execution, no `javascript:` URLs
 
 ### F8 — Persistence
-- [ ] IndexedDB autosave, debounced
+- [x] IndexedDB autosave, debounced
 - [ ] 20-version history per template, with restore and diff
-- [ ] Draft recovery after unexpected close
-- [ ] Clear-all-data control naming what it deletes
-- [ ] Graceful behavior in private browsing where IndexedDB may be unavailable — the app still works and says saving is off
+- [x] Draft recovery after unexpected close
+- [x] Clear-all-data control naming what it deletes
+- [x] Graceful behavior in private browsing where IndexedDB may be unavailable — the app still works and says saving is off
 
 ### F9 — Brand kit (multi-practice)
-- [ ] Colors, fonts, logo, practice name, contact details, social links, booking link
-- [ ] **Multiple named profiles**, switchable — a VHA may support several practices
-- [ ] Starts empty; each install enters its own practice values (no real practice's details ship in the public repo)
-- [ ] Feeds merge field defaults and template rendering
+- [ ] Colors, fonts, logo, practice name, contact details, social links, booking link — covered, but spread across design presets, the email identity logo, Practice details and the signature rather than one brand kit
+- [ ] ~~**Multiple named profiles**, switchable~~ — dropped: §10 Q3 settled on one practice per install
+- [x] Starts empty; each install enters its own practice values (no real practice's details ship in the public repo)
+- [x] Feeds merge field defaults and template rendering
 - [ ] Included in bundle export
 
 ### F10 — Photography and visual content
@@ -375,11 +375,11 @@ A feature is done when every box is checked.
 | App | **Static site** — HTML/CSS/JS | No backend to run; secure, offline-capable, free to host |
 | Build | **Vite + TypeScript** | Types on the parser and checker; existing logic ports directly |
 | Framework | **None, or Preact if the UI demands it** | The current tool is vanilla and works. Do not add React for its own sake. |
-| Storage | **IndexedDB** (`idb`) | Templates, snippets, brand profiles, history |
-| Compression | `CompressionStream`, `lz-string` fallback | Share links |
-| Hosting | **Vercel static** | Push to deploy, preview per branch |
-| Source | **GitHub**, private repo | |
-| Sanitizer | **DOMPurify** | Imported bundles and share links are untrusted |
+| Storage | **IndexedDB**, behind a small in-house adapter (`src/store/adapter.ts`) | Drafts, practice profile, workspace, transcripts, PDF signatures |
+| Compression | `CompressionStream`, `lz-string` fallback — planned, Phase 3 | Share links |
+| Hosting | **Vercel static** — live at https://prulz.vercel.app | Push to deploy, preview per branch |
+| Source | **GitHub**, public repo `designhubofficial/prulz` | Public, so no real practice or clinician details are committed |
+| Sanitizer | **DOMPurify** — planned, Phase 3 | Imported bundles and share links are untrusted |
 
 **No Supabase. No auth provider. No database.** All dropped along with accounts — they solved a problem that no longer exists.
 
@@ -394,6 +394,8 @@ A feature is done when every box is checked.
 Step 2 is not optional. It is what makes everything after it safe.
 
 ### 6.3 Project layout
+
+The layout planned in the original spec. The tree as built is in the README, under "How it fits together".
 
 ```
 src/
@@ -431,10 +433,12 @@ A small surface, but not zero:
 | **0 — Port and lock** ✅ | Repo, Vite scaffold, engine extracted + typed, **38 golden snapshots**, builds clean | done | Output reproduced byte-for-byte; regression net verified by deliberately breaking it |
 | **1 — Make it usable daily** ✅ | 35-template library, merge fields, Fill mode, export guard, Gmail export, three-pane UI, IndexedDB autosave, draft recovery, recent values, practice profile | done | A VHA can send a real practice email from a library template |
 | **2 — Make it safe** ✅ | PHI scanner, compliance / a11y / deliverability / rendering checks, rendering matrix, VML buttons | done | A template containing PHI cannot be saved unacknowledged |
-| **3 — Make it shareable** | Bundle export/import, share links, snippets, new syntax, `.eml` and paste-tuned exports, version history, multi-practice brand profiles | ~2 weeks | One VHA sends another a template and it opens correctly |
+| **3 — Make it shareable** | Bundle export/import, share links, snippets, new syntax, `.eml` and paste-tuned exports, version history | ~2 weeks · not started | One VHA sends another a template and it opens correctly |
 | **T — Call transcriber** ✅ | Local Whisper, speaker turns, transcript editing, five export formats, rules-based call notes, hand-off into the template picker | done | A recording becomes an editable transcript with the network off, after one model download |
+| **W — Provider workspace** ✅ | Overview, email library (75 templates), follow-ups, provider directory, favorites, notes | done | A VA can run the day from one screen |
+| **P — PDF editor** ✅ | Local PDF editing: text, highlight, draw, shapes, images, organize, merge, split, compress, and signatures (drawn or uploaded PNG, saved in the browser) | done | A PDF can be signed and exported with the network off |
 
-Roughly seven weeks for one developer. Each phase ends deployable and useful.
+Multi-practice brand profiles were dropped from Phase 3 (§10 Q3). Each phase ends deployable and useful; the app has been live on Vercel since 2026-09-15.
 
 ---
 
@@ -464,7 +468,7 @@ Deferred, not cancelled. Each would be a **separate static tool sharing the same
 |---|---|
 | **Email signature builder** ✅ | Ported. Shares the brand kit and the contrast meter. |
 | **Call transcriber** ✅ | Shipped as `src/transcribe/`. Whisper in the browser via Transformers.js — WebGPU with a WASM fallback, weights cached after one fetch. The exception to the separate-tool rule: it earns its place in *this* shell because its output is the email the studio already builds, and it hands off directly into the template picker. |
-| **PDF suite** | Client-side merge / split / sign / fill / redact / OCR, in the mold of the reference app. Same no-server argument. |
+| **PDF suite** — partly ✅ | Shipped as the PDF editor inside this shell: merge, split, sign, annotate, organize, compress. Form fill, redaction and OCR remain. Same no-server argument. |
 | **Provider lead finder** | Verified research preserved in Appendix B — that work is done and still valid. |
 | **Screening calculators** | PHQ-9, GAD-7, ASRS, C-SSRS. Compute-only, nothing stored. |
 | **Coding cheat sheet** | E/M plus psychotherapy add-ons, ICD-10 quick reference. |
@@ -474,12 +478,12 @@ Deferred, not cancelled. Each would be a **separate static tool sharing the same
 ## 10. Open questions
 
 1. ~~Which mail client do users paste into most?~~ **Answered: Gmail.** `src/export/gmail.ts` is built and tested against what Gmail strips.
-2. ~~Is the starter library UpWell-flavored or practice-neutral?~~ **Answered: neutral.** All 35 templates use `example.com` and a generic practice; the practice name is a merge field.
+2. ~~Is the starter library UpWell-flavored or practice-neutral?~~ **Answered: neutral.** The templates use `example.com` and a generic practice; the practice name is a merge field.
 3. ~~How many practices does a typical user support?~~ **Answered: one.** The profile is a settings panel, not a header switcher. The storage layer keys a single profile; multi-profile would be an additive change if that ever alters.
 4. **Should templates support Spanish or bilingual output?** Real value in healthcare, meaningful scope. Not in v1. The transcriber already accepts Spanish and Tagalog audio, so the input half of this is answered.
 4a. **Should the transcriber ever gain an LLM summariser?** Deferred deliberately, not forgotten. It would need a backend to hold a key, a BAA with the provider, and the PHI scanner gating what may be sent — three things the current architecture does not have. The rules-based call notes cover the common cases without any of them.
-5. **Who owns the GitHub repo and Vercel project** — the practice or the individual? Still worth settling before the first deploy.
-6. **Are 35 templates the right coverage?** Marketing (6) and newsletter (5) are weighted per the team's priority. Gaps are cheap to fill — a template is a data entry, not code.
+5. ~~Who owns the GitHub repo and Vercel project?~~ **Answered:** the code lives at `github.com/designhubofficial/prulz` (public) and deploys to Vercel at https://prulz.vercel.app.
+6. **Is the template coverage right?** The library has grown from 35 to 75 templates across 9 categories; marketing and newsletter stay weighted per the team's priority. Gaps are cheap to fill — a template is a data entry, not code.
 
 ---
 

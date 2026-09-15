@@ -13,7 +13,6 @@
 <a class="skip-link" href="#hub">Skip to workspace</a>
 <aside id="appRail" class="app-rail" aria-label="Workspace navigation"></aside>
 <header id="workspaceBar" class="workspace-bar"></header>
-<div id="chatWidget" class="chat-widget"></div>
 <main id="hub" class="hub" tabindex="-1"><p class="loading-workspace">Opening your workspace…</p></main>
 
 <header class="app-header">
@@ -321,14 +320,17 @@
 </main>
 
 <!-- =========================================================== pdf ==== -->
-<main class="pdf-workspace" id="pdfTool" hidden tabindex="-1">
+<!-- data-loading and the inert controls below are cleared by initPdfEditor once
+     the editor module has loaded and wired them up. -->
+<main class="pdf-workspace" id="pdfTool" hidden tabindex="-1" data-loading>
   <section class="pdf-empty" id="pdfEmpty" aria-labelledby="pdfEmptyTitle">
     <div class="pdf-empty-main">
       <div class="pdf-kicker"><span class="pdf-kicker-dot"></span> LOCAL PDF WORKSPACE <span class="pdf-kicker-rule"></span> PRIVATE BY DEFAULT</div>
       <h1 id="pdfEmptyTitle">Make every PDF<br><em>ready to move.</em></h1>
       <p class="pdf-empty-lede">Edit, sign, annotate, and organize documents without sending them to a server. Drop a file and keep the work in one calm, focused workspace.</p>
 
-      <div class="pdf-dropzone" id="pdfDropzone" tabindex="0" role="button" aria-label="Choose a PDF or image file, or drop one here">
+      <p class="pdf-loading-note" id="pdfLoadingNote" role="status">Loading the PDF editor…</p>
+      <div class="pdf-dropzone" id="pdfDropzone" tabindex="0" role="button" aria-label="Choose a PDF or image file, or drop one here" inert data-pdf-until-ready>
         <input type="file" id="pdfFileInput" accept="application/pdf,.pdf,image/png,image/jpeg,image/webp" multiple hidden>
         <span class="pdf-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M12 17V10m0 0-3 3m3-3 3 3"/></svg></span>
         <div class="pdf-drop-copy"><strong>Drop a PDF to start editing</strong><span>or click to browse · images can become a new PDF</span></div>
@@ -345,7 +347,7 @@
       <div class="pdf-aside-top"><span class="pdf-aside-label">QUICK START</span><span class="pdf-aside-badge">11 tools</span></div>
       <h2>One document.<br>Every common move.</h2>
       <p>Start with the job in front of you. The editor keeps pages, tools, and export together so you don’t have to hunt.</p>
-      <div class="pdf-shortcut-list">
+      <div class="pdf-shortcut-list" inert data-pdf-until-ready>
         <button type="button" data-pdf-empty-action="merge"><span class="pdf-shortcut-icon">＋</span><span><strong>Merge files</strong><small>Combine PDFs into one</small></span><span>→</span></button>
         <button type="button" data-pdf-empty-action="images"><span class="pdf-shortcut-icon">▧</span><span><strong>Images to PDF</strong><small>Turn scans into pages</small></span><span>→</span></button>
         <button type="button" data-pdf-empty-action="annotate"><span class="pdf-shortcut-icon">✎</span><span><strong>Mark up a page</strong><small>Highlight, draw, or sign</small></span><span>→</span></button>

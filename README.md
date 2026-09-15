@@ -13,11 +13,12 @@ Use **Email library** (or Ctrl/Cmd+K) to search and filter templates. Star a tem
 to keep it in your favorites. Add providers in **Provider directory** and choose
 **Write an introduction** to fill their name into the editor. **Follow-ups** supports
 due dates, priorities, completion, and editing. Call-note actions can be added to
-the follow-up tracker. The **floating General chat** lets users set a display name,
-open a compact bottom-right chatbox, move it as a picture-in-picture window, and
-leave messages with emoji shortcuts. Unread counts clear when the chat is opened.
-Counts and chat messages are derived from local records; the app does not send
-email, synchronize across devices, or send scheduled notifications.
+the follow-up tracker. Counts are derived from local records; the app does not
+send email, synchronize across devices, or send scheduled notifications.
+
+There is no chat. An earlier "General chat" was removed because it only saved
+messages in the sender's own browser, so it looked like a team chat without being
+one. Messages stored by that build are deleted the next time the workspace loads.
 
 The redesign lives in `src/workspace.ts` and `src/workspace.css`; provider content
 is in `src/library/providers.ts`. It uses the existing Vite/TypeScript stack and
@@ -334,6 +335,26 @@ template studio loads. WebGPU is where the speed comes from and needs none of it
 
 ---
 
+## The PDF editor
+
+Opens, edits and exports PDFs entirely in the browser: `pdfjs-dist` renders the
+pages and `pdf-lib` writes the result. Nothing is uploaded. Tools: add text,
+highlight, draw, shapes, images, sign, organize pages (reorder, rotate,
+duplicate, delete, insert blank or image pages), merge, split a selection into
+its own file, and compress. Images dropped on the start screen become a new PDF.
+
+**Signatures** can be drawn or uploaded as a PNG, and are saved in this browser
+(up to 8) so the next document can reuse them. Uploads are checked by their bytes
+rather than their extension, capped at 5 MB, and scaled to at most 1200px before
+saving — see `src/store/pdf-signatures.ts`.
+
+The editor module loads on demand, the first time the tool opens. Until it
+arrives the start-screen controls are inert and a loading note shows, so nothing
+looks clickable before it works; a file dropped in that moment is held rather
+than letting the browser navigate away to open it.
+
+---
+
 ## The export guard
 
 The single most important behaviour in the app.
@@ -423,7 +444,7 @@ npm run build      # → dist/
 (CSP, `X-Frame-Options`, `nosniff`). Point Vercel at the repo and it will pick
 those up.
 
-`dist/` is about 36 MB, nearly all of it the four ONNX runtime binaries in
+`dist/` is about 42 MB, nearly all of it the four ONNX runtime binaries in
 `dist/ort/`. A browser downloads exactly one of them — the runtime picks by
 feature detection — so shipping all four is a deployment cost, not a user one,
 and guessing wrong would mean a 404 and a dead tool on somebody's browser.
@@ -438,11 +459,12 @@ between machines, because there is no server.
 
 | What | Where |
 |---|---|
-| Practice details | One profile — the practice name, phone, booking link, your name |
+| Practice details | One profile — the practice name, phone, booking link, your name. Starts empty |
+| Workspace | Follow-ups, provider directory, favorites, recently opened templates, and notes |
 | Drafts | One per template, autosaved as you type, restored on return |
 | Recent values | Per field, so a provider name typed last week is one click away |
-| General chat | One shared room with a display name, read state, and up to 200 messages, saved locally |
 | Transcripts | One per call, with your speaker names and edits. The audio is not kept |
+| PDF signatures | Up to 8 uploaded or drawn PNG signatures, reused across documents |
 
 All three editors debounce their writes by about half a second, and flush them
 when the page is hidden — otherwise an edit made immediately before closing the
@@ -467,7 +489,7 @@ blind confirmation.
 
 ## Testing status
 
-904 tests across eleven suites:
+922 tests across twelve suites:
 
 | Suite | Covers |
 |---|---|
@@ -475,11 +497,14 @@ blind confirmation.
 | `library.test.ts` | The core patient, outreach, and practice catalogue |
 | `providers.test.ts` | Provider-facing templates, fields, categories, and safe defaults |
 | `merge.test.ts` | Field extraction, formatting, validation, the export guard |
+| `checks.test.ts` | The pre-send review: the PHI scanner and the other check groups, including the 150ms budget |
 | `gmail.test.ts` | What survives a Gmail paste, and what is reported as lost |
-| `store.test.ts` | Storage adapter, practice profile, drafts, recent values |
-| `signature.test.ts` | Signature generator, form schema, profile fill-in |
+| `store.test.ts` | Storage adapter, practice profile (ships empty), drafts, recent values |
+| `signature.test.ts` | Signature generator, form schema, profile fill-in, placeholder defaults |
+| `pdf-signatures.test.ts` | Saved PDF signatures: PNG only, no duplicates, the 8-signature limit, removal |
 | `design.test.ts` | Theme/palette presets, thumbnails, category grouping |
 | `transcribe.test.ts` | Segment assembly, speaker rules, every export format, the call-notes rules |
+| `scratch-summary.test.ts` | Prints sample call-note summaries to read by eye — a smoke test more than an assertion |
 
 The storage layer is tested through a pluggable adapter, so the logic runs in
 Node against an in-memory backend and the IndexedDB implementation stays thin.
